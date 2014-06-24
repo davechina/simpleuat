@@ -1,0 +1,171 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<!-- begin #sidebar -->
+<div id="sidebar" class="sidebar">
+	<!-- begin sidebar scrollbar -->
+	<div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 100%;">
+		<div data-scrollbar="true" data-height="100%" style="overflow: auto; width: auto; height: 100%;">
+			<!-- begin sidebar user -->
+			<ul class="nav">
+				<li class="nav-profile">
+					Navigator
+				</li>
+			</ul>
+			<!-- end sidebar user -->
+			<!-- begin sidebar nav -->
+			<ul class="nav">
+				
+				<li><a href="/"><i class="fa fa-laptop"></i> <span>概览</span></a></li>
+				<li><a href="/servers"><i class="fa fa-signal"></i> <span>服务器总表</span></a></li>
+				<li class="has-sub">
+					<a href="javascript:;">
+					    <i class="fa fa-suitcase"></i> 
+					    <b class="caret pull-right"></b>
+					    <span>分组</span> 
+					</a>
+
+					<ul class="sub-menu" style="overflow: hidden; display: none;">
+						{% for pd, count in pds %}
+							<li><a href="{% url 'pd' pd %}">{{pd}}</a></li>
+						{% endfor %}
+					</ul>
+				</li>				
+				<li><a href="/help"><i class="fa fa-file"></i> <span>帮助</span></a></li>
+
+
+		        <!-- begin sidebar minify button -->
+				<li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
+		        <!-- end sidebar minify button -->
+			</ul>
+			<!-- end sidebar nav -->
+		</div>
+		<div class="slimScrollBar ui-draggable" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; height: 873px; background: rgb(0, 0, 0);"></div>
+		<div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(51, 51, 51);"></div>
+	</div>
+	<!-- end sidebar scrollbar -->
+</div>
+<!-- end #sidebar -->
+<!-- begin #content -->
+<div id="content" class="content">
+
+	<div class="row">
+		<!-- begin col-3 -->
+		<div class="col-md-3 col-sm-6 ui-sortable">
+			<div class="widget widget-state bg-purple">
+				<div class="state-info">
+					<h4>Total Servers</h4>
+					<p>{{total}}</p>	
+				</div>
+				<div class="state-link">
+					<a href="/servers">View Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				</div>
+			</div>
+		</div>
+		<!-- end col-3 -->
+		<!-- begin col-3 -->
+		<div class="col-md-3 col-sm-6 ui-sortable">
+			<div class="widget widget-state bg-blue">
+				<div class="state-info">
+					<h4>Windows Servers</h4>
+					<p>{{ windows }}</p>	
+				</div>
+				<div class="state-link">
+					<a href="/servers">View Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				</div>
+			</div>
+		</div>
+		<!-- end col-3 -->
+		<!-- begin col-3 -->
+		<div class="col-md-3 col-sm-6 ui-sortable">
+			<div class="widget widget-state bg-green">
+				<div class="state-info">
+					<h4>Linux Servers</h4>
+					<p>{{ linux }}</p>	
+				</div>
+				<div class="state-link">
+					<a href="/servers">View Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				</div>
+			</div>
+		</div>
+		<!-- end col-3 -->
+		<!-- begin col-3 -->
+		<div class="col-md-3 col-sm-6 ui-sortable">
+			<div class="widget widget-state bg-red">
+				<div class="state-info">
+					<h4>Avaliable Servers</h4>
+					<p>{{ avaliable }}</p>	
+				</div>
+				<div class="state-link">
+					<a href="/servers">View Detail <i class="fa fa-arrow-circle-o-right"></i></a>
+				</div>
+			</div>
+		</div>
+		<!-- end col-3 -->
+	</div>
+
+
+	<div class="row">
+	    <!-- begin col-12 -->
+	    <div class="col-md-12 ui-sortable">
+	        <!-- begin panel -->
+	        <div class="panel panel-inverse">
+	            <div class="panel-heading">
+	                <div class="panel-heading-btn">
+	                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand" data-original-title="" title=""><i class="fa fa-expand"></i></a>
+	                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+	                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+	                </div>
+	                <h4 class="panel-title">Pds</h4>
+	            </div>
+	            <div class="panel-body">
+	                <table class="table table-bordered m-b-0">
+	                    <tbody>
+	                    	{% for pd, count in pds %}  
+	                    		{% if forloop.counter0|divisibleby:"4" %}
+	                    			{% ifnotequal forloop.counter 1 %}
+	                    				</tr> 
+	                    			{% endifnotequal %}
+	                    			               	
+	                        		<tr>
+	                        			<td class="text-center">
+	                        				<div style="float: left">
+	                        					<a href="{% url 'pd' pd %}">
+	 											<img src="/static/color/img/5102/{{pd}}.png">
+	 											</a>
+	 										</div>
+		 									<div>
+		                        				<div>{{ pd }}</div>
+		                    					<div class="hidden-xs"><strong>{{ count }}</strong></div>
+		                    				</div>
+	                        			</td>
+	                        	{% else %}
+	                        			<td class="text-center">
+	                        				<div style="float: left">
+	                        					<a href="{% url 'pd' pd %}">
+	 											<img src="/static/color/img/5102/{{pd}}.png">
+	 											</a>
+	 										</div>
+		 									<div>
+		                        				<div>{{ pd }}</div>
+		                    					<div class="hidden-xs"><strong>{{ count }}</strong></div>
+		                    				</div>
+	                        			</td>
+	                        	{% endif %}
+	                                                 
+	                        {% endfor %}
+	                        </tr> 
+	                    </tbody>
+	                </table>
+	            </div>
+	        </div>
+	        <!-- end panel -->
+	    </div>
+	    <!-- end col-12 -->
+	</div>	
+	
+</div>
+<!-- end #content -->
+
+{% endblock %}

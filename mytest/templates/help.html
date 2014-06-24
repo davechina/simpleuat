@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block main %}
+<div class="page-content">                  
+    <div class="page-content">
+        <div class="row" style="margin-top:10px;">
+
+            <div class="col-lg-6">
+                <div class="well">
+                    <h2>帮助文档</h2>
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<small>—— 使用过程中如遇到问题，或有更好的建议，可发邮件给 APP_QATE。</small>
+                    <br>
+                    <br>
+
+                    <dl>             
+                        <dt>功能</dt>
+                        <p>资源收集展示，集成了跳转到zabbix、web页面中调用远程桌面连接、CPU负载警示等功能。</p>
+
+                        <br>
+
+                        <dt>说明</dt>
+                        <div class="alert alert-info"><strong>点击CI</strong>&nbsp;&nbsp; 跳转到该主机的zabbix监控页面</div>
+                        <div class="alert alert-warning"><strong>点击IP</strong>&nbsp;&nbsp;跳转到调用远程桌面连接的页面。仅适用于windows服务器！仅适用于IE浏览器，非IE浏览器需要下载相应插件！</div>
+
+                </div>
+            </div>
+
+            <div class="col-lg-6">
+                <div class="well">
+                    <h2>更新历史</h2>
+
+                    <!-- 添加更新历史 begin -->
+                    <h3>1.1 Beta版 &nbsp; &nbsp; 2014/06/23</h3>
+                    <div class="alert alert-info">
+                        <span class="fa fa-plus"></span>增加各PD分组导航<br>
+                        <span class="fa fa-plus"></span>增加管理员在线编辑功能<br>
+                    </div>
+
+                    <!-- 添加更新历史  end -->
+
+                    <h3>1.0 Beta版 &nbsp; &nbsp; 2014/06/06</h3>
+                    <div class="alert alert-info">
+                        <span class="fa fa-refresh"></span> 更新示例<br>
+                        <span class="fa fa-minus"></span> 取消功能示例<br>
+                        <span class="fa fa-plus"></span> 新增功能示例<br>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <p>&nbsp;</p>
+
+    </div>
+</div>
+{% endblock %}
