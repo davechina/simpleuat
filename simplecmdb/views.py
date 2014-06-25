@@ -80,8 +80,8 @@ def pd(req, pd_name):
 @login_required(login_url='/login/')
 def jump_zabbix(req, host):
 	zabbix_api = 'http://zabbixserver.qa.nt.ctripcorp.com/api_jsonrpc.php'
-	zabbix_user = 'admin'
-	zabbix_password = 'zabbix'
+	zabbix_user = '*'
+	zabbix_password = '*'
 
 	zab = ZabbixOperation(zabbix_api, zabbix_user, zabbix_password)
 	hostid = zab.get_hostid(host)
