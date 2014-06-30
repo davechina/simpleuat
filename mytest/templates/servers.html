@@ -102,13 +102,13 @@
                                         <td id="comments">{{ s.Comments }}</td>
                                         {% endif %}
                                         <td>
-                                            <a href="{% url 'zabbix' s.HostName %}" target="_blank"><img src="/static/zabbix.ico" height="16" width="16"></a>
+                                            <a href="{% url 'zabbix' s.HostName %}" target="_blank"><img src="/static/zabbix.ico" height="16" width="16" alt="zabbix" title="zabbix"></a>
                                             {% if "Windows" in s.OSInfo %}
-                                            <a href="{% url 'connect' s.IPAddress %}" target="_blank"><img src="/static/RDP.png" height="16" width="16"></a>
+                                            <a href="{% url 'connect' s.IPAddress %}" target="_blank"><img src="/static/RDP.png" height="16" width="16" alt="远程桌面" title="远程桌面"></a>
                                             {% else %}
-                                            <img src="/static/RDP.png" height="16" width="16">
+                                            <img src="/static/RDP.png" height="16" width="16" alt="远程桌面" title="远程桌面">
                                             {% endif %}
-                                            <a href="http://opskits.uat.qa.nt.ctripcorp.com/Pool/List?Device=&Product=&Status=&Keyword={{s.IPAddress}}" target="_blank"><img src="/static/webinfo.jpg" height="16" width="16"></a>
+                                            <a href="http://opskits.uat.qa.nt.ctripcorp.com/Pool/List?Device=&Product=&Status=&Keyword={{s.IPAddress}}" target="_blank"><img src="/static/webinfo.jpg" height="16" width="16" alt="webinfo" title="webinfo"></a>
                                         </td>
                                     </tr>
                                     {% endfor %}
