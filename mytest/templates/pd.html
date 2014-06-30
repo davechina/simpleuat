@@ -101,13 +101,13 @@
                                         <td id="comments">{{ s.Comments }}</td>
                                         {% endif %}
                                         <td>
-                                            <a href="{% url 'zabbix' s.HostName %}" target="_blank">zabbix</a>
+                                            <a href="{% url 'zabbix' s.HostName %}" target="_blank"><img src="/static/zabbix.ico" height="16" width="16"></a>
                                             {% if "Windows" in s.OSInfo %}
-                                            <a href="{% url 'connect' s.IPAddress %}" target="_blank">远程桌面</a>
+                                            <a href="{% url 'connect' s.IPAddress %}" target="_blank"><img src="/static/RDP.png" height="16" width="16"></a>
                                             {% else %}
-                                            远程桌面
+                                            <img src="/static/RDP.png" height="16" width="16">
                                             {% endif %}
-                                            <a href="http://opskits.uat.qa.nt.ctripcorp.com/Pool/List?Device=&Product=&Status=&Keyword={{s.IPAddress}}" target="_blank">webinfo</a>                                            
+                                            <a href="http://opskits.uat.qa.nt.ctripcorp.com/Pool/List?Device=&Product=&Status=&Keyword={{s.IPAddress}}" target="_blank"><img src="/static/webinfo.jpg" height="16" width="16"></a>
                                         </td>
                                     </tr>
                                     {% endfor %}
