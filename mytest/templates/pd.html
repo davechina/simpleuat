@@ -77,19 +77,15 @@
                                     <th>角色</th>
                                     <th>PD</th>
                                     <th>功能</th>
+                                    <th>工具链接</th>
                                   </tr>
                                 </thead>
 
                                 <tbody role="alert" aria-live="polite" aria-relevant="all">
                                     {% for s in pd_ser %}
                                     <tr id={{s.IPAddress}}>            
-                                        <td id="host"><a href="{% url 'zabbix' s.HostName %}" target="_blank">{{ s.HostName }}</a></td>
-                                        {% if "Windows" in s.OSInfo %}
-                                            <!-- <td><a id="conn" href="{% url 'connect' s.IPAddress %}" target="_blank">{{ s.IPAddress }}</a></td> -->
-                                            <td id="ip"><a href="{% url 'connect' s.IPAddress %}" target="_blank">{{ s.IPAddress }}</a></td>
-                                        {% else %}
-                                            <td id="ip">{{ s.IPAddress }}</td>
-                                        {% endif %}
+                                        <td id="host">{{ s.HostName }}</td>
+                                        <td id="ip">{{ s.IPAddress }}</td>
                                         <td id="os">{{ s.OSInfo }}</td>
                                         <td id="cpu">{{ s.CPUInfo }}</td>
                                         <td id="mem">{{ s.MemInfo }}</td>
@@ -104,6 +100,15 @@
                                         <td id="pd">{{ s.Pd }}</td>
                                         <td id="comments">{{ s.Comments }}</td>
                                         {% endif %}
+                                        <td>
+                                            <a href="{% url 'zabbix' s.HostName %}" target="_blank">zabbix</a>
+                                            {% if "Windows" in s.OSInfo %}
+                                            <a href="{% url 'connect' s.IPAddress %}" target="_blank">远程桌面</a>
+                                            {% else %}
+                                            远程桌面
+                                            {% endif %}
+                                            <a href="http://opskits.uat.qa.nt.ctripcorp.com/Pool/List?Device=&Product=&Status=&Keyword={{s.IPAddress}}" target="_blank">webinfo</a>                                            
+                                        </td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
