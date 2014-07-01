@@ -33,7 +33,7 @@
 					</ul>
 				</li>				
 				<li><a href="/help"><i class="fa fa-file"></i> <span>帮助</span></a></li>
-				<li><a href="http://conf.ctripcorp.com/pages/viewpage.action?pageId=51643505"><i class="fa fa-file"></i> <span>UAT环境指南</span></a></li>
+				<li><a href="http://conf.ctripcorp.com/pages/viewpage.action?pageId=51643505" target="_blank"><i class="fa fa-file"></i> <span>UAT环境指南</span></a></li>
 
 
 		        <!-- begin sidebar minify button -->
@@ -130,29 +130,34 @@
 	                    			{% endifnotequal %}
 	                    			               	
 	                        		<tr>
+	                        			
 	                        			<td class="text-center">
-	                        				<div style="float: left">
-	                        					<a href="{% url 'pd' pd %}">
+	                        				<a href="{% url 'pd' pd %}">
+	                        				<div style="float: left">	                   
 	 											<img src="/static/color/img/5102/{{pd}}.png">
-	 											</a>
 	 										</div>
 		 									<div>
 		                        				<div>{{ pd }}</div>
 		                    					<div class="hidden-xs"><strong>{{ count }}</strong></div>
+
 		                    				</div>
+		                    				</a>
 	                        			</td>
+	 										                        			
 	                        	{% else %}
+	                        				                        	
 	                        			<td class="text-center">
+	                        				<a href="{% url 'pd' pd %}">
 	                        				<div style="float: left">
-	                        					<a href="{% url 'pd' pd %}">
-	 											<img src="/static/color/img/5102/{{pd}}.png">
-	 											</a>
+	 											<img src="/static/color/img/5102/{{pd}}.png">	 											
 	 										</div>
 		 									<div>
 		                        				<div>{{ pd }}</div>
 		                    					<div class="hidden-xs"><strong>{{ count }}</strong></div>
 		                    				</div>
+		                    				</a>
 	                        			</td>
+	                        			
 	                        	{% endif %}
 	                                                 
 	                        {% endfor %}

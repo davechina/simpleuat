@@ -196,7 +196,12 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 # CAS
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+<<<<<<< HEAD
 CAS_SERVER_URL = "*"
+=======
+#CAS_SERVER_URL = "https://cas.ctripcorp.com/caso/"
+CAS_SERVER_URL = "http://cas.uat.qa.nt.ctripcorp.com/caso/"
+>>>>>>> 84d04dd80e06ed78b057da1139abb2ea02c3bea9
 CAS_LOGOUT_COMPLETELY = True
 CAS_IGNORE_REFERER = True
 CAS_REDIRECT_URL = "/"
