@@ -66,7 +66,7 @@ class ZabbixOperation(object):
 
 
 if __name__ == '__main__':
-	zabbix_api = 'http://zabbixserver.uat.sh.ctriptravel.com/api_jsonrpc.php'
+	zabbix_api = 'http://zabbixserver.qa.nt.ctripcorp.com/api_jsonrpc.php'
 	zabbix_user = 'admin'
 	zabbix_password = 'zabbix'
 
