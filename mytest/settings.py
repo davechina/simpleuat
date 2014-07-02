@@ -196,15 +196,25 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 # CAS
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
+<<<<<<< 2ce36aeda568ac9cb524b84ad70238075c65c6be
 <<<<<<< HEAD
 CAS_SERVER_URL = "*"
 =======
 #CAS_SERVER_URL = "https://cas.ctripcorp.com/caso/"
 CAS_SERVER_URL = "http://cas.uat.qa.nt.ctripcorp.com/caso/"
 >>>>>>> 84d04dd80e06ed78b057da1139abb2ea02c3bea9
+=======
+CAS_SERVER_URL = "https://cas.ctripcorp.com/caso/"
+# CAS_SERVER_URL = "http://cas.uat.qa.nt.ctripcorp.com/caso/"
+>>>>>>> 5464625fde3c5dfc7001a6f2f1135e035ebc79b9
 CAS_LOGOUT_COMPLETELY = True
 CAS_IGNORE_REFERER = True
 CAS_REDIRECT_URL = "/"
 CAS_AUTO_CREATE_USERS = True
 CAS_GATEWAY = False
 CAS_RETRY_LOGIN = True
+CAS_SINGLE_SIGN_OUT=True
+CAS_RENEW=False
+CAS_EXTRA_LOGIN_PARAMS=False
+CAS_PROXY_CALLBACK=True
+CAS_ALLOWED_PROXIES=True
