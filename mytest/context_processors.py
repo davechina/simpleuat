@@ -2,10 +2,8 @@
 from django.shortcuts import redirect
 
 def auth_processor(req):
-	if hasattr(req, 'user'):
-		name = req.user.username
+	if req.user.is_authenticated():
+		name = req.user.last_name
+		return {'name': name}
 	else:
-		from django.contrib.auth.models import AnonymousUser
-		name = AnonymousUser()
-
-	return {'name': name}
+		return {'name': None}
