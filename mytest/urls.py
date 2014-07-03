@@ -26,6 +26,6 @@ urlpatterns = patterns('simplecmdb.views',
 )
 
 urlpatterns += patterns('django_cas.views',
-    url(r'^login/$', login),
+    url(r'^login/$', csrf_exempt(login)),
     url(r'^logout/$', logout),
     )
