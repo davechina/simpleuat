@@ -23,6 +23,8 @@ urlpatterns = patterns('simplecmdb.views',
 	url(r'^servers/(?P<ip>\d+\.\d+\.\d+\.\d+)/$', 'connect', name='connect'),
     url(r'^pd/(?P<pd_name>.+)/$', 'pd', name="pd"),
     url(r'^help/$', 'help'),
+    url(r'^addserver/$', 'addserver'),
+    url(r'^search/$', 'search'),
 )
 
 urlpatterns += patterns('django_cas.views',

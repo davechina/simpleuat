@@ -25,8 +25,8 @@ DATABASES = {
 
         'ENGINE': 'django.db.backends.mysql', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
         'NAME': 'simplecmdb',                      # Or path to database file if using sqlite3.
-        'USER': '*',
-        'PASSWORD': '*',
+        'USER': 'cmdb',
+        'PASSWORD': '1qaz',
         'HOST': '',                      # Empty for localhost through domain sockets or '127.0.0.1' for localhost through TCP.
         'PORT': '',                      # Set to empty string for default.
     }
@@ -196,8 +196,8 @@ TEMPLATE_CONTEXT_PROCESSORS = (
 # CAS
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
-CAS_SERVER_URL = "https://cas.ctripcorp.com/caso/"
-# CAS_SERVER_URL = "http://cas.uat.qa.nt.ctripcorp.com/caso/"
+# CAS_SERVER_URL = "https://cas.ctripcorp.com/caso/"
+CAS_SERVER_URL = "http://cas.uat.qa.nt.ctripcorp.com/caso/"
 CAS_LOGOUT_COMPLETELY = True
 CAS_IGNORE_REFERER = True
 CAS_REDIRECT_URL = "/"
