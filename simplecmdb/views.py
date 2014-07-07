@@ -2,12 +2,14 @@
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
 from simplecmdb.models import Server, PD
 from django.utils import simplejson
 from django.core.exceptions import ObjectDoesNotExist
 from zabbix import ZabbixOperation
+from forms import AddServerForm
+from django.db.models import Q
 
 
 @csrf_exempt
@@ -94,6 +96,33 @@ def jump_zabbix(req, host):
 @login_required(login_url='/login/')
 def connect(req, ip):
     return render_to_response("connect.html", {'ip': ip})
+
+
+@login_required(login_url='/login/')
+@permission_required('simplecmdb.can_add_server')
+def addserver(req):
+	if req.method == "POST":
+		form = AddServerForm(req.POST)
+		if form.is_valid():
+			data = form.cleaned_data
+
+			ser = Server(HostName=data.get('HostName'), IPAddress=data.get('IPAddress'),  CPUInfo=data.get('CPUInfo'), MemInfo=data.get('MemInfo'), OSInfo=data.get('OSInfo'), DiskTotal=data.get('DiskTotal'), Role=data.get('Role'), Comments=data.get('Comments'), Pd=PD.objects.get(Name=data.get('Pd')))
+			ser.save()
+			return redirect('/')
+	else:
+		form = AddServerForm()
+
+	return render_to_response("addserver.html", {'form': form}, context_instance=RequestContext(req))
+
+
+@login_required(login_url='/login')
+def search(req):
+	if req.method == "GET" and "getserver" in req.GET:
+		servers = Server.objects.all()
+		i_data = req.GET.get("getserver")
+		o_data = servers.filter(Q(IPAddress__contains=i_data)| Q(HostName__contains=i_data)| Q(CPUInfo__contains=i_data)| Q(MemInfo__contains=i_data)| Q(OSInfo__contains=i_data)| Q(DiskTotal__contains=i_data)| Q(Role__contains=i_data)| Q(Comments__contains=i_data))
+
+	return render_to_response("result.html",  {'serverinfo': o_data}, context_instance=RequestContext(req))
 
 
 def help(req):
