@@ -82,13 +82,13 @@ def pd(req, pd_name):
 @login_required(login_url='/login/')
 def jump_zabbix(req, host):
 	zabbix_api = 'http://zabbixserver.qa.nt.ctripcorp.com/api_jsonrpc.php'
-	zabbix_user = '*'
-	zabbix_password = '*'
+	zabbix_user = 'admin'
+	zabbix_password = 'zabbix'
 
 	zab = ZabbixOperation(zabbix_api, zabbix_user, zabbix_password)
 	hostid = zab.get_hostid(host)
 	if hostid:
-		grap_url = 'http://zabbixserver.qa.nt.ctripcorp.com/host_screen.php?hostid=%s&sid=8a2b817e67bbf36a' % hostid
+		grap_url = 'http://zabbixserver.qa.nt.ctripcorp.com/host_screen.php?hostid=%s&sid=40fa87ffa0252c78' % hostid
 		return redirect(grap_url)
 	else:
 		return HttpResponse('No host found in zabbix server.')
