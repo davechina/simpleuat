@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block main %}
+
+<!-- begin #sidebar -->
+<div id="sidebar" class="sidebar">
+	<!-- begin sidebar scrollbar -->
+	<div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 100%;">
+		<div data-scrollbar="true" data-height="100%" style="overflow: auto; width: auto; height: 100%;">
+			<!-- begin sidebar user -->
+			<ul class="nav">
+				<li class="nav-profile">
+					Navigator
+				</li>
+			</ul>
+			<!-- end sidebar user -->
+			<!-- begin sidebar nav -->
+			<ul class="nav">
+				
+				<li><a href="/"><i class="fa fa-laptop"></i> <span>概览</span></a></li>
+				<li><a href="/servers"><i class="fa fa-signal"></i> <span>服务器总表</span></a></li>
+				<li class="has-sub">
+					<a href="javascript:;">
+					    <i class="fa fa-suitcase"></i> 
+					    <b class="caret pull-right"></b>
+					    <span>分组</span> 
+					</a>
+
+					<ul class="sub-menu" style="overflow: hidden; display: none;">
+						{% for pd, count in pds %}
+							<li><a href="{% url 'pd' pd %}">{{pd}}</a></li>
+						{% endfor %}
+					</ul>
+				</li>				
+				<li><a href="/help"><i class="fa fa-file"></i> <span>帮助</span></a></li>
+				<li><a href="http://conf.ctripcorp.com/pages/viewpage.action?pageId=51643505" target="_blank"><i class="fa fa-file"></i> <span>UAT环境指南</span></a></li>
+				{% if perms.can_add_server %}
+				<li><a href="/addserver"><i class="fa fa-file"></i> <span>添加服务器</span></a></li>
+				{% endif %}				
+
+
+		        <!-- begin sidebar minify button -->
+				<li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
+		        <!-- end sidebar minify button -->
+			</ul>
+			<!-- end sidebar nav -->
+		</div>
+		<div class="slimScrollBar ui-draggable" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; height: 873px; background: rgb(0, 0, 0);"></div>
+		<div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(51, 51, 51);"></div>
+	</div>
+	<!-- end sidebar scrollbar -->
+</div>
+<!-- end #sidebar -->
+<!-- begin #content -->
+<div id="content" class="content">
+
+	<div class="row">
+	    <!-- begin col-12 -->
+	    <div class="col-12 ui-sortable">
+	        <!-- begin panel -->
+	        <div class="panel panel-inverse">
+	            <div class="panel-heading">
+	                <h4 class="panel-title">在线提交数据</h4>
+	            </div>
+	            <div class="panel-body">
+	                <form action="/addserver/" method="POST">{% csrf_token %}
+	                	{% for f in form %}
+	                    <div class="form-group">
+	                        <label class="col-sm-1 control-label">{{ f.label_tag }}:</label>
+	                        <div>{{f}}</div> 
+	                    </div>
+	                    {% endfor %}
+
+	                    <button type="submit" class="btn btn-sm btn-primary">提交数据</button>
+	                </form>
+	            </div>
+	        </div>
+	    </div>
+	</div>
+
+</div>
+
+{% endblock %}	
