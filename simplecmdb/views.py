@@ -28,8 +28,9 @@ def CollectHostInfo(req):
 		pd = PD(Name=tags.get('pd'), Contact=tags.get('pd_contact'))
 		pd.save()	
 		
-		ser = Server(HostName=host, IPAddress=ip,  CPUInfo=cpunum, MemInfo=memtotal, OSInfo=os.get('release'), DiskTotal=disk.get('total'), DiskInfo=simplejson.dumps(disk.get('info')), Role=tags.get('role'), Comments=tags.get('comments'), Pd=PD.objects.get(Name=tags.get('pd')))
-		ser.save()	#如果model里没有设置primary_key，save()方法将默认执行insert动作。
+		if ip and host:
+			ser = Server(HostName=host, IPAddress=ip,  CPUInfo=cpunum, MemInfo=memtotal, OSInfo=os.get('release'), DiskTotal=disk.get('total'), DiskInfo=simplejson.dumps(disk.get('info')), Role=tags.get('role'), Comments=tags.get('comments'), Pd=PD.objects.get(Name=tags.get('pd')))
+			ser.save()	#如果model里没有设置primary_key，save()方法将默认执行insert动作。
 
 	 	return HttpResponse('Information has been posted.')
 	else:
