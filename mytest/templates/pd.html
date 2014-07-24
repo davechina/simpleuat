@@ -1,55 +1,7 @@
 {% extends "base.html" %}
 
 {% block main %}
-<!-- begin #sidebar -->
-<div id="sidebar" class="sidebar">
-    <!-- begin sidebar scrollbar -->
-    <div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 100%;">
-        <div data-scrollbar="true" data-height="100%" style="overflow: auto; width: auto; height: 100%;">
-            <!-- begin sidebar user -->
-            <ul class="nav">
-                <li class="nav-profile">
-                    Navigator
-                </li>
-            </ul>
-            <!-- end sidebar user -->
-            <!-- begin sidebar nav -->
-            <ul class="nav">
-                
-                <li><a href="/"><i class="fa fa-laptop"></i> <span>概览</span></a></li>
-                <li><a href="/servers"><i class="fa fa-signal"></i> <span>服务器总表</span></a></li>
-                <li class="has-sub">
-                    <a href="javascript:;">
-                        <i class="fa fa-suitcase"></i> 
-                        <b class="caret pull-right"></b>
-                        <span>分组</span> 
-                    </a>
 
-                    <ul class="sub-menu" style="overflow: hidden; display: none;">
-                        {% for pd, count in pds %}
-                            <li><a href="{% url 'pd' pd %}">{{pd}}</a></li>
-                        {% endfor %}
-                    </ul>
-                </li>               
-                {% if perms.can_add_server %}
-                <li><a href="/addserver"><i class="fa fa-pencil-square-o"></i> <span>添加服务器</span></a></li>
-                {% endif %}
-                <li><a href="http://conf.ctripcorp.com/pages/viewpage.action?pageId=51643505" target="_blank"><i class="fa fa-book"></i> <span>UAT环境指南</span></a></li>              
-                <li><a href="/help"><i class="fa fa-file"></i> <span>帮助</span></a></li>              
-
-
-                <!-- begin sidebar minify button -->
-                <li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
-                <!-- end sidebar minify button -->
-            </ul>
-            <!-- end sidebar nav -->
-        </div>
-        <div class="slimScrollBar ui-draggable" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; height: 873px; background: rgb(0, 0, 0);"></div>
-        <div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(51, 51, 51);"></div>
-    </div>
-    <!-- end sidebar scrollbar -->
-</div>
-<!-- end #sidebar -->
 <!-- begin #content -->
 <div id="content" class="content">
 
@@ -125,4 +77,86 @@
         </div>
     </div>
 </div>
+{% endblock %}
+
+{% block script %}
+
+<!-- 双击修改表格内容，并传递给后台数据库 -->
+<script type="text/javascript">
+    var editHTML;
+    var editText;
+    function setEditHTML(value){
+        editHTML = '<input type="text" value="'+value+'" />';
+        editHTML += '<input type="button" onclick="ok(this)" value="修改" />';
+        editHTML += '<input type="button" onclick="cancel(this)" value="取消" />';
+    }
+
+    //绑定事件
+    $(".editbox").each(function(){ //取得所有class为editbox的对像
+    $(this).bind("dblclick",function(){ //给其绑定双击事件
+            editText = $(this).html(); //取得表格单元格的文本
+            setEditHTML(editText); //初始化控件
+            $(this).data("oldtxt",editText) //将单元格原文本保存在其缓存中，便修改失败或取消时用
+            .html(editHTML) //改变单元格内容为编辑状态
+            .unbind("dblclick"); //删除单元格双击事件，避免多次双击
+            // alert($(this).attr('id'))
+        });
+    });
+
+    //取消
+    function cancel(cbtn){
+        var $obj = $(cbtn).parent(); //'取消'按钮的上一级，即单元格td
+        $obj.html($obj.data("oldtxt")); //将单元格内容设为原始数据，取消修改
+        $obj.bind("dblclick",function(){ //重新绑定单元格双击事件
+            editText = $(this).html();
+            setEditHTML(editText);
+            $(this).data("oldtxt",editText)
+            .html(editHTML).unbind("dblclick");
+        });
+    }
+
+    //修改
+    function ok(obtn){
+        var $obj = $(obtn).parent(); //'修改'按钮的上一级，即单元格td
+        var td_id = $obj.attr("id"); //取得td的ID
+        var tr_id = $obj.parent().attr("id"); //取得该行数据的ID，此例ID绑定在tr中            
+        var value = $obj.find("input:text")[0].value; //取得文本框的值，即新数据
+
+        //AJAX 修改数据略
+        //成功
+        if(true){
+        $obj.data("oldtxt",value); //设置此单元格缓存为新数据
+        cancel(obtn); //调用'取消'方法
+
+
+        //获取并构造数据
+        var new_host = $obj.parent().children().eq(0).text();
+        var new_ip = $obj.parent().children().eq(1).text();
+        var new_os = $obj.parent().children().eq(2).text();
+        var new_cpu = $obj.parent().children().eq(3).text();
+        var new_mem = $obj.parent().children().eq(4).text();
+        var new_disk = $obj.parent().children().eq(5).text();
+        var new_role = $obj.parent().children().eq(6).text();
+        var new_pd = $obj.parent().children().eq(7).text();
+        var new_comments = $obj.parent().children().eq(8).text();
+
+        data = {'hostname':new_host, 'ip':new_ip, 'os':{'release':new_os}, 'cpu':new_cpu, 'mem':new_mem, 'disk':{'total':new_disk}, 'tags':{'role':new_role, 'pd':new_pd, 'comments':new_comments}}
+
+
+        //ajax异步提交数据。
+        var url="/collect/";
+        var type="json";
+        var json_data = JSON.stringify(data);
+
+        $.post(url, json_data, type);
+
+    } 
+    //失败
+    else{
+        alert("error");
+        cancel(obtn);
+        }
+    }
+</script>
+
 {% endblock %}

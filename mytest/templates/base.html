@@ -1,214 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-	<meta charset="utf-8">
-	<title>UATINFO</title>
-	<meta content="width=device-width, initial-scale=1.0" name="viewport">
-	<meta content="" name="description">
-	<meta content="" name="author">
+	<head>
+		{% include "head.html" %}
+	</head>
 	
-	<!-- ================== BEGIN BASE CSS STYLE ================== -->
-	<link href="/static/color/css/jquery-ui.min.css" rel="stylesheet">
-	<link href="/static/color/css/bootstrap.min.css" rel="stylesheet">
-	<link href="/static/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet">
-	<link href="/static/color/css/animate.min.css" rel="stylesheet">
-	<link href="/static/color/css/style.min.css" rel="stylesheet">
-	<link href="/static/color/css/style-responsive.min.css" rel="stylesheet">
-	<!-- ================== END BASE CSS STYLE ================== -->
+	<body>
+		<!-- begin #page-loader -->
+		<div id="page-loader" class="fade in hide"><span class="spinner"></span></div>
+		<!-- end #page-loader -->
+		
+		<!-- begin #page-container -->
+		<div id="page-container" class="fade in">
+			{% include "headerbar.html" %}
+			
+			{% include "sidebar.html" %}
 
-	<!-- ================== BEGIN PAGE LEVEL STYLE ================== -->
-	<link href="/static/color/css/data-table.css" rel="stylesheet">
-	<!-- ================== END PAGELEVEL STYLE ================== -->
-
-	<style type="text/css">
-		a:link {text-decoration: none; color:none}
-	</style>
-</head>
-<body>
-	<!-- begin #page-loader -->
-	<div id="page-loader" class="fade in hide"><span class="spinner"></span></div>
-	<!-- end #page-loader -->
-	
-	<!-- begin #page-container -->
-	<div id="page-container" class="fade in">
-		<!-- begin #header -->
-		<div id="header" class="header navbar navbar-default navbar-fixed-top">
-			<!-- begin container-fluid -->
-			<div class="container-fluid">
-				<!-- begin mobile sidebar expand / collapse button -->
-				<div class="navbar-header">
-					<a href="/" class="navbar-brand"><span class="navbar-logo"></span> UATINFO</a>
-					<button type="button" class="navbar-toggle" data-click="sidebar-toggled">
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-						<span class="icon-bar"></span>
-					</button>
-				</div>
-				<!-- end mobile sidebar expand / collapse button -->
-				
-				<!-- begin header navigation right -->
-				<ul class="nav navbar-nav navbar-right">
-
-					<li>
-							<form class="navbar-form full-width" action="/search/" method="GET">{% csrf_token %}
-							<div class="form-group">
-								<input type="text" class="form-control" placeholder="服务器搜索" name="getserver">
-								<button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
-							</div>
-						</form>
-					</li>
-									
-					<li class="dropdown navbar-user">
-						<a href="javascript:;" class="dropdown-toggle" data-toggle="dropdown">
-							<img src="/static/color/img/turbo.png" alt=""> 
-							<span class="hidden-xs">{{ name }}</span> <b class="caret"></b>
-						</a>
-						<ul class="dropdown-menu animated fadeInLeft">
-							<li class="arrow"></li>
-							<li><a href="/logout/">Log Out</a></li>
-						</ul>
-					</li>
-				</ul>
-				<!-- end header navigation right -->
-			</div>
-			<!-- end container-fluid -->
+			{% block main %}
+			{% endblock %}
+			
+			<!-- begin scroll to top btn -->
+			<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
+			<!-- end scroll to top btn -->
 		</div>
-		<!-- end #header -->
-		
+		<!-- end page container -->
 
-		{% block main %}{% endblock %}
-		
+		<!-- ================== BEGIN BASE JS ================== -->
+		<!-- // <script async="" src="./Color Admin   Page with Minified Sidebar_files/analytics.js"></script> -->
+		<!-- // <script src="/static/color/js/jquery-1.8.2.min.js"></script> -->
+		<script src="/static/bootstrap/js/jquery-1.11.0.min.js"></script>
+		<script src="/static/color/js/jquery-ui.min.js"></script>
+		<script src="/static/color/js/bootstrap.min.js"></script>
+		<script src="/static/color/js/jquery.slimscroll.min.js"></script>
+		<script src="/static/color/js/apps.min.js"></script>
+		<!-- ================== END BASE JS ================== -->
 
-		<!-- begin scroll to top btn -->
-		<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
-		<!-- end scroll to top btn -->
-	</div>
-	<!-- end page container -->
-	
-	<!-- ================== BEGIN BASE JS ================== -->
-	<!-- // <script async="" src="./Color Admin   Page with Minified Sidebar_files/analytics.js"></script> -->
-	<!-- // <script src="/static/color/js/jquery-1.8.2.min.js"></script> -->
-	<script src="/static/bootstrap/js/jquery-1.11.0.min.js"></script>
-	<script src="/static/color/js/jquery-ui.min.js"></script>
-	<script src="/static/color/js/bootstrap.min.js"></script>
-	<script src="/static/color/js/jquery.slimscroll.min.js"></script>
-	<script type="text/javascript" src="/static/json2.js"></script>
-	<!-- ================== END BASE JS ================== -->
-	
-	<!-- ================== BEGIN PAGE LEVEL JS ================== -->
-	<script src="/static/color/js/apps.min.js"></script>
-	<script src="/static/color/js/jquery.dataTables.js"></script>
-	<script src="/static/color/js/data-table.js"></script>
-	<!-- ================== END PAGE LEVEL JS ================== -->
-	<script>
-		$(document).ready(function() {
-			App.init();
-		});
-	</script>
+		<!-- ================== BEGIN PAGE LEVEL JS ================== -->
+		<script type="text/javascript" src="/static/json2.js"></script>
+		<script src="/static/color/js/jquery.dataTables.js"></script>
+		<script src="/static/color/js/data-table.js"></script>
+		<!-- ================== END PAGE LEVEL JS ================== -->
 
-	<!-- 导航栏点击变色 -->
-	<script type="text/javascript">
-		$(function(){
-		  function stripTrailingSlash(str) {
-		    if(str.substr(-1) == '/') {
-		      return str.substr(0, str.length - 1);
-		    }
-		    return str;
-		  }
-
-		  var url = window.location.pathname;  
-		  var activePage = stripTrailingSlash(url);
-
-		  $('.nav li a').each(function(){  
-		    var currentPage = stripTrailingSlash($(this).attr('href'));
-
-		    if (activePage == currentPage) {
-		      $(this).parent().addClass('active'); 
-		    } 
-		  });
-		});
-	</script>
-
-
-	<!-- 双击修改表格内容，并传递给后台数据库 -->
-	<script type="text/javascript">
-		var editHTML;
-		var editText;
-		function setEditHTML(value){
-			editHTML = '<input type="text" value="'+value+'" />';
-			editHTML += '<input type="button" onclick="ok(this)" value="修改" />';
-			editHTML += '<input type="button" onclick="cancel(this)" value="取消" />';
-		}
-
-		//绑定事件
-		$(".editbox").each(function(){ //取得所有class为editbox的对像
-		$(this).bind("dblclick",function(){ //给其绑定双击事件
-				editText = $(this).html(); //取得表格单元格的文本
-				setEditHTML(editText); //初始化控件
-				$(this).data("oldtxt",editText) //将单元格原文本保存在其缓存中，便修改失败或取消时用
-				.html(editHTML) //改变单元格内容为编辑状态
-				.unbind("dblclick"); //删除单元格双击事件，避免多次双击
-				// alert($(this).attr('id'))
+		<script>
+			$(document).ready(function() {
+				App.init();
 			});
-		});
+		</script>
 
-		//取消
-		function cancel(cbtn){
-			var $obj = $(cbtn).parent(); //'取消'按钮的上一级，即单元格td
-			$obj.html($obj.data("oldtxt")); //将单元格内容设为原始数据，取消修改
-			$obj.bind("dblclick",function(){ //重新绑定单元格双击事件
-				editText = $(this).html();
-				setEditHTML(editText);
-				$(this).data("oldtxt",editText)
-				.html(editHTML).unbind("dblclick");
+		<!-- 导航栏点击变色 -->
+		<script type="text/javascript">
+			$(function(){
+			  function stripTrailingSlash(str) {
+			    if(str.substr(-1) == '/') {
+			      return str.substr(0, str.length - 1);
+			    }
+			    return str;
+			  }
+
+			  var url = window.location.pathname;  
+			  var activePage = stripTrailingSlash(url);
+
+			  $('.nav li a').each(function(){  
+			    var currentPage = stripTrailingSlash($(this).attr('href'));
+
+			    if (activePage == currentPage) {
+			      $(this).parent().addClass('active'); 
+			    } 
+			  });
 			});
-		}
+		</script>
 
-		//修改
-		function ok(obtn){
-			var $obj = $(obtn).parent(); //'修改'按钮的上一级，即单元格td
-			var td_id = $obj.attr("id"); //取得td的ID
-			var tr_id = $obj.parent().attr("id"); //取得该行数据的ID，此例ID绑定在tr中			
-			var value = $obj.find("input:text")[0].value; //取得文本框的值，即新数据
+		
+		{% block script %}
+		{% endblock %}
 
-			//AJAX 修改数据略
-			//成功
-			if(true){
-			$obj.data("oldtxt",value); //设置此单元格缓存为新数据
-			cancel(obtn); //调用'取消'方法
-
-
-			//获取并构造数据
-			var new_host = $obj.parent().children().eq(0).text();
-			var new_ip = $obj.parent().children().eq(1).text();
-			var new_os = $obj.parent().children().eq(2).text();
-			var new_cpu = $obj.parent().children().eq(3).text();
-			var new_mem = $obj.parent().children().eq(4).text();
-			var new_disk = $obj.parent().children().eq(5).text();
-			var new_role = $obj.parent().children().eq(6).text();
-			var new_pd = $obj.parent().children().eq(7).text();
-			var new_comments = $obj.parent().children().eq(8).text();
-
-			data = {'hostname':new_host, 'ip':new_ip, 'os':{'release':new_os}, 'cpu':new_cpu, 'mem':new_mem, 'disk':{'total':new_disk}, 'tags':{'role':new_role, 'pd':new_pd, 'comments':new_comments}}
-
-
-			//ajax异步提交数据。
-			var url="/collect/";
-			var type="json";
-			var json_data = JSON.stringify(data);
-
-			$.post(url, json_data, type);
-
-		} 
-		//失败
-		else{
-			alert("error");
-			cancel(obtn);
-			}
-		}
-	</script>
-
-
-</body>
+	</body>
 </html>
