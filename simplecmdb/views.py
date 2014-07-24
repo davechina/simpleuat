@@ -1,4 +1,6 @@
 # -*- coding:utf-8 -*-
+from __future__ import absolute_import
+
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
 from django.http import HttpResponse
@@ -7,9 +9,12 @@ from django.views.decorators.csrf import csrf_exempt
 from simplecmdb.models import Server, PD
 from django.utils import simplejson
 from django.core.exceptions import ObjectDoesNotExist
-from zabbix import ZabbixOperation
-from forms import AddServerForm
+from .zabbix import ZabbixOperation
+from .forms import AddServerForm
 from django.db.models import Q
+from .sql_zbx import GetZabbixData
+from django.views.decorators.cache import cache_page
+import datetime
 
 
 @csrf_exempt
@@ -62,6 +67,38 @@ def summary(req):
 	}
 
 	return render_to_response("summary.html", data, context_instance=RequestContext(req))
+
+@csrf_exempt
+def get_icmp_stat():
+    user = r'uapp_zbxreader'
+    password = r'wY4slvrnHcc7@tw'
+    host = r'10.2.22.19'
+    port = 55666
+    db = 'zabbix'
+    zbx = GetZabbixData(host, port, user, password, db)
+
+    icmp_sql = r"select h.host,fn_getlastvalue(i.itemid,UNIX_TIMESTAMP()-delay-300) as value from items i inner join hosts h on i.hostid=h.hostid where key_ = 'icmpping';"
+    icmp_stat = zbx.get_zbx_stat(icmp_sql)
+    return dict(list(icmp_stat))
+
+# @cache_page(60 * 60)
+@csrf_exempt
+def get_server_stat():
+    user = r'uapp_zbxreader'
+    password = r'wY4slvrnHcc7@tw'
+    host = r'10.2.22.19'
+    port = 55666
+    db = 'zabbix'
+    zbx = GetZabbixData(host, port, user, password, db)
+
+    ser_sql = r"select host,max(if((key_= 'vm.memory.size[pavailable]'),value_avg,NULL)) AS vm,max(if((key_= 'system.swap.size[,pfree]'),value_avg,NULL)) AS swap,max(if((key_= 'system.cpu.load'),value_avg,NULL)) AS cpu from (select h.host,key_,avg(value) as value_avg from items i inner join hosts h on i.hostid=h.hostid inner join history his on i.itemid=his.itemid where key_ in ('vm.memory.size[pavailable]','system.swap.size[,pfree]','system.cpu.load') and clock>=UNIX_TIMESTAMP('%s') and clock<=UNIX_TIMESTAMP('%s') group by h.host,key_)tbl group by host;" % ((datetime.datetime.now()+datetime.timedelta(hours=-1)).strftime('%Y-%m-%d %H:00:00'), datetime.datetime.now().strftime('%Y-%m-%d %H:00:00'))
+    ser_stat = zbx.get_zbx_stat(ser_sql)
+
+    d = {}
+    for i in ser_stat:
+    	d.update({i[0]:{'mem_ava_per':i[1], 'swap_ava_per':i[2], 'cpu_load':i[3]}})
+    return d
+
 
 @login_required(login_url='/login/')
 def servers(req):

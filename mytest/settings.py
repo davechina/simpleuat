@@ -209,3 +209,11 @@ CAS_RENEW=False
 CAS_EXTRA_LOGIN_PARAMS=False
 CAS_PROXY_CALLBACK=True
 CAS_ALLOWED_PROXIES=True
+
+
+CACHES = {
+    'default': {
+        'BACKEND': 'django.core.cache.backends.locmem.LocMemCache',
+        'LOCATION': 'unique-snowflake'
+    }
+}
