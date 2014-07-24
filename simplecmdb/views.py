@@ -83,7 +83,7 @@ def get_icmp_stat():
 
 # @cache_page(60 * 60)
 @csrf_exempt
-def get_server_stat(req):
+def get_server_stat():
     user = r'uapp_zbxreader'
     password = r'wY4slvrnHcc7@tw'
     host = r'10.2.22.19'
@@ -92,14 +92,13 @@ def get_server_stat(req):
     zbx = GetZabbixData(host, port, user, password, db)
 
     ser_sql = r"select host,max(if((key_= 'vm.memory.size[pavailable]'),value_avg,NULL)) AS vm,max(if((key_= 'system.swap.size[,pfree]'),value_avg,NULL)) AS swap,max(if((key_= 'system.cpu.load'),value_avg,NULL)) AS cpu from (select h.host,key_,avg(value) as value_avg from items i inner join hosts h on i.hostid=h.hostid inner join history his on i.itemid=his.itemid where key_ in ('vm.memory.size[pavailable]','system.swap.size[,pfree]','system.cpu.load') and clock>=UNIX_TIMESTAMP('%s') and clock<=UNIX_TIMESTAMP('%s') group by h.host,key_)tbl group by host;" % ((datetime.datetime.now()+datetime.timedelta(hours=-1)).strftime('%Y-%m-%d %H:00:00'), datetime.datetime.now().strftime('%Y-%m-%d %H:00:00'))
-    # ser_stat = zbx.get_zbx_stat(ser_sql)
+    ser_stat = zbx.get_zbx_stat(ser_sql)
 
-    # d = {}
-    # for i in ser_stat:
-    # 	d.update({i[0]:{'mem_ava_per':i[1], 'swap_ava_per':i[2], 'cpu_load':i[3]}})
-    # return d
+    d = {}
+    for i in ser_stat:
+    	d.update({i[0]:{'mem_ava_per':i[1], 'swap_ava_per':i[2], 'cpu_load':i[3]}})
+    return d
 
-    print req.body
 
 
 @login_required(login_url='/login/')

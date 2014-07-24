@@ -25,7 +25,6 @@ urlpatterns = patterns('simplecmdb.views',
     url(r'^help/$', 'help'),
     url(r'^addserver/$', 'addserver'),
     url(r'^search/$', 'search'),
-    url(r'^getzbxdata/$', 'get_server_stat'),
 )
 
 urlpatterns += patterns('django_cas.views',
