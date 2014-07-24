@@ -34,7 +34,7 @@ def CollectHostInfo(req):
 		pd.save()	
 		
 		if ip and host:
-			ser = Server(HostName=host, IPAddress=ip,  CPUInfo=cpunum, MemInfo=memtotal, OSInfo=os.get('release'), DiskTotal=disk.get('total'), DiskInfo=simplejson.dumps(disk.get('info')), Role=tags.get('role'), Comments=tags.get('comments'), Pd=PD.objects.get(Name=tags.get('pd')))
+			ser = Server(HostName=host.strip(), IPAddress=ip.strip(),  CPUInfo=cpunum, MemInfo=memtotal, OSInfo=os.get('release'), DiskTotal=disk.get('total'), DiskInfo=simplejson.dumps(disk.get('info')), Role=tags.get('role'), Comments=tags.get('comments'), Pd=PD.objects.get(Name=tags.get('pd')))
 			ser.save()	#如果model里没有设置primary_key，save()方法将默认执行insert动作。
 
 	 	return HttpResponse('Information has been posted.')
@@ -144,7 +144,7 @@ def addserver(req):
 		if form.is_valid():
 			data = form.cleaned_data
 
-			ser = Server(HostName=data.get('HostName'), IPAddress=data.get('IPAddress'),  CPUInfo=data.get('CPUInfo'), MemInfo=data.get('MemInfo'), OSInfo=data.get('OSInfo'), DiskTotal=data.get('DiskTotal'), Role=data.get('Role'), Comments=data.get('Comments'), Pd=PD.objects.get(Name=data.get('Pd')))
+			ser = Server(HostName=data.get('HostName').strip(), IPAddress=data.get('IPAddress').strip(),  CPUInfo=data.get('CPUInfo'), MemInfo=data.get('MemInfo'), OSInfo=data.get('OSInfo'), DiskTotal=data.get('DiskTotal'), Role=data.get('Role'), Comments=data.get('Comments'), Pd=PD.objects.get(Name=data.get('Pd')))
 			ser.save()
 			return redirect('/')
 	else:
