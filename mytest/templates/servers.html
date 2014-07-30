@@ -41,9 +41,11 @@
                                     {% for s in res %}
                                     <tr id='details'>
                                         {% if s.icmp == '1' %}
-                                        <td id="host">{{ s.server }}</td>                                       
-                                        {% else %}
+                                        <td id="host">{{ s.server }}</td>                                      
+                                        {% elif s.icmp == '0' %}
                                         <td id="host"><font color="red">{{ s.server }}</font></td>
+                                        {% else %}
+                                        <td id="host"><font color="blue">{{ s.server }}</font></td>
                                         {% endif %}
                                         <td id="ip">{{ s.ip }}</td>
                                         <td id="os">{{ s.os }}</td>

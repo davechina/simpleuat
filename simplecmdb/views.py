@@ -144,10 +144,38 @@ def servers(req):
 
 	res = []
 	for ser in servers:
-		icmp = icmp_stat.get(ser.HostName.upper())
-		stat = ser_stat.get(ser.HostName.upper())
 		stat_ = {}
+
+		icmp = icmp_stat.get(ser.HostName.upper())
+		if not icmp:
+			icmp = icmp_stat.get(ser.HostName.lower())
+
+		stat = ser_stat.get(ser.HostName.upper())
+		if not stat:
+			stat = ser_stat.get(ser.HostName.lower())
 		
+		if not stat:
+			stat_['cpu_average_load'], stat_['mem_free_percent'], stat_['swap_free_percent'] = None, None, None
+		else:
+			cpu_load = stat.get('cpu_load')
+			if cpu_load:
+				stat_['cpu_average_load'] = round(cpu_load, 2)
+			else:
+				stat_['cpu_average_load'] = None
+
+			mem_free_percent = stat.get('mem_ava_per')
+			if mem_free_percent:
+				stat_['mem_free_percent'] = str(round(mem_free_percent, 2)) + '%'
+			else:
+				stat_['mem_free_percent'] = None
+
+			swap_free_percent = stat.get('swap_ava_per')
+			if swap_free_percent:
+				stat_['swap_free_percent'] = str(round(swap_free_percent, 2)) + '%'
+			else:
+				stat_['swap_free_percent'] = None
+			
+
 		stat_['icmp'] = icmp
 		stat_['server'] = ser.HostName.upper()
 		stat_['ip'] = ser.IPAddress
@@ -157,20 +185,7 @@ def servers(req):
 		stat_['disktotal'] = ser.DiskTotal
 		stat_['role'] = ser.Role
 		stat_['pd'] = ser.Pd
-		stat_['comments'] = ser.Comments
-
-		if stat:
-			cpu_load = stat.get('cpu_load')
-			if cpu_load:
-				stat_['cpu_average_load'] = round(cpu_load, 2)
-
-			mem_free_percent = stat.get('mem_ava_per')
-			if mem_free_percent:
-				stat_['mem_free_percent'] = str(round(mem_free_percent, 2)) + '%'
-
-			swap_free_percent = stat.get('swap_ava_per')
-			if swap_free_percent:
-				stat_['swap_free_percent'] = str(round(swap_free_percent, 2)) + '%'
+		stat_['comments'] = ser.Comments				
 
 		res.append(stat_)
 

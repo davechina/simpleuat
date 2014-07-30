@@ -42,12 +42,12 @@ def call_zbx(query='icmp'):
 
     elif query == 'stat':
         now = datetime.datetime.now()
-        if now.minute < 35:
+        if now.minute < 40:
+            last_hour = (now + datetime.timedelta(hours=-3)).strftime('%Y-%m-%d %H:00:00')
+            this_hour = (now + datetime.timedelta(hours=-2)).strftime('%Y-%m-%d %H:00:00')
+        else:
             last_hour = (now + datetime.timedelta(hours=-2)).strftime('%Y-%m-%d %H:00:00')
             this_hour = (now + datetime.timedelta(hours=-1)).strftime('%Y-%m-%d %H:00:00')
-        else:
-            last_hour = (now + datetime.timedelta(hours=-1)).strftime('%Y-%m-%d %H:00:00')
-            this_hour = now.strftime('%Y-%m-%d %H:00:00')
 
         sql = r"select host,max(if((key_= 'vm.memory.size[pavailable]'),value_avg,NULL)) AS vm,max(if((key_= 'system.swap.size[,pfree]'),value_avg,NULL)) AS swap,max(if((key_= 'system.cpu.load'),value_avg,NULL)) AS cpu from (select h.host,key_,avg(value) as value_avg from items i inner join hosts h on i.hostid=h.hostid inner join history his on i.itemid=his.itemid where key_ in ('vm.memory.size[pavailable]','system.swap.size[,pfree]','system.cpu.load') and clock>=UNIX_TIMESTAMP('%s') and clock<=UNIX_TIMESTAMP('%s') group by h.host,key_)tbl group by host;" % (last_hour, this_hour)
         ser_stat = zbx.get_zbx_stat(sql)
