@@ -144,12 +144,12 @@ def servers(req):
 
 	res = []
 	for ser in servers:
-		icmp = icmp_stat.get(ser.HostName)
-		stat = ser_stat.get(ser.HostName)
+		icmp = icmp_stat.get(ser.HostName.upper())
+		stat = ser_stat.get(ser.HostName.upper())
 		stat_ = {}
 		
 		stat_['icmp'] = icmp
-		stat_['server'] = ser.HostName
+		stat_['server'] = ser.HostName.upper()
 		stat_['ip'] = ser.IPAddress
 		stat_['os'] = ser.OSInfo
 		stat_['cpu'] = ser.CPUInfo
