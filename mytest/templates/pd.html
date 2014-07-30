@@ -27,9 +27,8 @@
                                     <th>IP</th>
                                     <th>操作系统</th>
                                     <th>CPU</th>
-                                    <th>Mem(MB)</th>
+                                    <th>Mem(GB)</th>
                                     <th>Disk(GB)</th>
-                                    <!-- <th>partitions</th> -->
                                     <th>角色</th>
                                     <th>PD</th>
                                     <th>功能</th>
@@ -46,7 +45,6 @@
                                         <td id="cpu">{{ s.CPUInfo }}</td>
                                         <td id="mem">{{ s.MemInfo }}</td>
                                         <td id="disk">{{ s.DiskTotal }}</td>
-                                        <!-- <td>{{ s.DiskInfo }}</td> -->
                                         {% if perms.can_change_pd %}
                                         <td class="editbox" id="role">{{ s.Role }}</td>
                                         <td class="editbox" id="pd">{{ s.Pd }}</td>

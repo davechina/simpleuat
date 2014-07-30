@@ -3,7 +3,7 @@ from __future__ import absolute_import
 
 from django.shortcuts import render_to_response, redirect
 from django.template import RequestContext
-from django.http import HttpResponse
+from django.http import HttpResponse, Http404
 from django.contrib.auth.decorators import login_required, permission_required
 from django.views.decorators.csrf import csrf_exempt
 from simplecmdb.models import Server, PD
@@ -12,9 +12,8 @@ from django.core.exceptions import ObjectDoesNotExist
 from .zabbix import ZabbixOperation
 from .forms import AddServerForm
 from django.db.models import Q
-from .sql_zbx import GetZabbixData
-from django.views.decorators.cache import cache_page
-import datetime
+from django.core.cache import cache
+from . import sql_zbx
 
 
 @csrf_exempt
@@ -41,10 +40,81 @@ def CollectHostInfo(req):
 	else:
 	 	return HttpResponse('No data post.')
 
+
+@csrf_exempt
+def get_server_and_pd():
+	all_servers = cache.get('all_servers')
+	if not all_servers:
+		all_servers = Server.objects.all()
+		cache.set('all_servers', all_servers, 1800)
+
+	all_pds = cache.get('all_pds')
+	if not all_pds:
+		all_pds = PD.objects.all()
+		cache.set('all_pds', all_pds, 1800)
+
+	return {'all_servers': all_servers, 'all_pds': all_pds}
+
+
+# @csrf_exempt
+# def get_zbx_data(req):
+# 	ser_stat = cache.get('ser_stat')
+# 	if not ser_stat:
+# 		ser_stat = sql_zbx.call_zbx('stat')
+# 		cache.set('ser_stat', ser_stat, 3600)
+
+# 	icmp_stat = cache.get('icmp_stat')
+# 	if not icmp_stat:
+# 		icmp_stat = sql_zbx.call_zbx('icmp')
+# 		# cache.set('icmp_stat', icmp_stat, 300)
+# 		cache.set('icmp_stat', icmp_stat, 3600)
+
+# 	data = simplejson.loads(req.body)
+# 	res = []
+
+# 	for ser in data:
+# 		ser = ser.strip()
+# 		icmp = icmp_stat.get(ser)
+# 		stat = ser_stat.get(ser)
+
+# 		stat_ = {}
+# 		if stat:
+# 			stat_['icmp'] = icmp
+# 			stat_['server'] = ser
+# 			stat_['cpu_load'] = stat.get('cpu_load')
+# 			stat_['mem_free_percent'] = stat.get('mem_ava_per')
+# 			stat_['swap_free_percent'] = stat.get('swap_ava_per') 
+# 		else:
+# 			stat_['server'] = ser
+# 			stat_['cpu_load'] = None
+# 			stat_['mem_free_percent'] = None
+# 			stat_['swap_free_percent'] = None
+#			stat_['icmp'] = None			
+# 		res.append(stat_)
+
+# 	return HttpResponse(simplejson.dumps(res, ensure_ascii=False))
+
+
+@csrf_exempt
+def get_zbx_data():
+	ser_stat = cache.get('ser_stat')
+	if not ser_stat:
+		ser_stat = sql_zbx.call_zbx('stat')
+		cache.set('ser_stat', ser_stat, 3600)
+
+	icmp_stat = cache.get('icmp_stat')
+	if not icmp_stat:
+		icmp_stat = sql_zbx.call_zbx('icmp')
+		cache.set('icmp_stat', icmp_stat, 300)
+
+	return {'ser_stat': ser_stat, 'icmp_stat':icmp_stat}
+
+
 @login_required(login_url='/login/')
 def summary(req):
-	servers = Server.objects.all()
-	pds = PD.objects.all()
+	data = get_server_and_pd()
+	servers = data.get('all_servers')
+	pds = data.get('all_pds')
 
 	try:
 		avaliable = pds.get(Name="备机").server_set.all().count()
@@ -68,48 +138,59 @@ def summary(req):
 
 	return render_to_response("summary.html", data, context_instance=RequestContext(req))
 
-@csrf_exempt
-def get_icmp_stat():
-    user = r'uapp_zbxreader'
-    password = r'wY4slvrnHcc7@tw'
-    host = r'10.2.22.19'
-    port = 55666
-    db = 'zabbix'
-    zbx = GetZabbixData(host, port, user, password, db)
-
-    icmp_sql = r"select h.host,fn_getlastvalue(i.itemid,UNIX_TIMESTAMP()-delay-300) as value from items i inner join hosts h on i.hostid=h.hostid where key_ = 'icmpping';"
-    icmp_stat = zbx.get_zbx_stat(icmp_sql)
-    return dict(list(icmp_stat))
-
-# @cache_page(60 * 60)
-@csrf_exempt
-def get_server_stat():
-    user = r'uapp_zbxreader'
-    password = r'wY4slvrnHcc7@tw'
-    host = r'10.2.22.19'
-    port = 55666
-    db = 'zabbix'
-    zbx = GetZabbixData(host, port, user, password, db)
-
-    ser_sql = r"select host,max(if((key_= 'vm.memory.size[pavailable]'),value_avg,NULL)) AS vm,max(if((key_= 'system.swap.size[,pfree]'),value_avg,NULL)) AS swap,max(if((key_= 'system.cpu.load'),value_avg,NULL)) AS cpu from (select h.host,key_,avg(value) as value_avg from items i inner join hosts h on i.hostid=h.hostid inner join history his on i.itemid=his.itemid where key_ in ('vm.memory.size[pavailable]','system.swap.size[,pfree]','system.cpu.load') and clock>=UNIX_TIMESTAMP('%s') and clock<=UNIX_TIMESTAMP('%s') group by h.host,key_)tbl group by host;" % ((datetime.datetime.now()+datetime.timedelta(hours=-1)).strftime('%Y-%m-%d %H:00:00'), datetime.datetime.now().strftime('%Y-%m-%d %H:00:00'))
-    ser_stat = zbx.get_zbx_stat(ser_sql)
-
-    d = {}
-    for i in ser_stat:
-    	d.update({i[0]:{'mem_ava_per':i[1], 'swap_ava_per':i[2], 'cpu_load':i[3]}})
-    return d
-
-
 
 @login_required(login_url='/login/')
 def servers(req):
-	servers = Server.objects.all()
-	pds = PD.objects.all()
-	return render_to_response("servers.html", {'serverinfo': servers, 'pds': [(pd, pds.get(Name=pd).server_set.all().count) for pd in pds]}, context_instance=RequestContext(req))
+	data = get_server_and_pd()
+	servers = data.get('all_servers')
+	pds = data.get('all_pds')
+
+	zbx_data = get_zbx_data()
+	icmp_stat = zbx_data.get('icmp_stat')
+	ser_stat = zbx_data.get('ser_stat')
+
+	res = []
+	for ser in servers:
+		icmp = icmp_stat.get(ser.HostName)
+		stat = ser_stat.get(ser.HostName)
+		stat_ = {}
+		
+		stat_['server'] = ser.HostName
+		stat_['ip'] = ser.IPAddress
+		stat_['os'] = ser.OSInfo
+		stat_['cpu'] = ser.CPUInfo
+		stat_['memtotal'] = ser.MemInfo
+		stat_['disktotal'] = ser.DiskTotal
+		stat_['role'] = ser.Role
+		stat_['pd'] = ser.Pd
+		stat_['comments'] = ser.Comments
+
+		if stat:
+			cpu_load = stat.get('cpu_load')
+			if cpu_load:
+				stat_['cpu_average_load'] = round(cpu_load, 2)
+
+			mem_free_percent = stat.get('mem_ava_per')
+			if mem_free_percent:
+				stat_['mem_free_percent'] = str(round(mem_free_percent, 2)) + '%'
+
+			swap_free_percent = stat.get('swap_ava_per')
+			if swap_free_percent:
+				stat_['swap_free_percent'] = str(round(swap_free_percent, 2)) + '%'
+
+			stat_['icmp'] = icmp
+
+		res.append(stat_)
+
+	# return render_to_response("servers.html", {'serverinfo': servers, 'pds': [(pd, pds.get(Name=pd).server_set.all().count) for pd in pds]}, context_instance=RequestContext(req))
+	return render_to_response("servers.html", {'res': res, 'pds': [(pd, pds.get(Name=pd).server_set.all().count) for pd in pds]}, context_instance=RequestContext(req))
+
 
 @login_required(login_url='/login/')
 def pd(req, pd_name):
-	pds = PD.objects.all()
+	data = get_server_and_pd()
+	pds = data.get('all_pds')
+
 	try:
 		pd_ser = pds.get(Name=pd_name).server_set.all()
 		pd_contact = pds.get(Name=pd_name).Contact
@@ -117,6 +198,7 @@ def pd(req, pd_name):
 		pd_ser = None
 		pd_contact = None
 	return render_to_response("pd.html", {'pd_ser': pd_ser, 'pd_name':pd_name, 'pd_contact':pd_contact, 'pds': [(pd, pds.get(Name=pd).server_set.all().count) for pd in pds]}, context_instance=RequestContext(req))	
+
 
 @login_required(login_url='/login/')
 def jump_zabbix(req, host):
@@ -130,7 +212,9 @@ def jump_zabbix(req, host):
 		grap_url = 'http://zabbixserver.qa.nt.ctripcorp.com/host_screen.php?hostid=%s&sid=40fa87ffa0252c78' % hostid
 		return redirect(grap_url)
 	else:
+		# raise Http404
 		return HttpResponse('No host found in zabbix server.')
+
 
 @login_required(login_url='/login/')
 def connect(req, ip):
@@ -154,10 +238,12 @@ def addserver(req):
 	return render_to_response("addserver.html", {'form': form}, context_instance=RequestContext(req))
 
 
-@login_required(login_url='/login')
+@login_required(login_url='/login/')
 def search(req):
+	data = get_server_and_pd()
+	servers = data.get('all_servers')
+
 	if req.method == "GET" and "getserver" in req.GET:
-		servers = Server.objects.all()
 		i_data = req.GET.get("getserver")
 		o_data = servers.filter(Q(IPAddress__contains=i_data)| Q(HostName__contains=i_data)| Q(CPUInfo__contains=i_data)| Q(MemInfo__contains=i_data)| Q(OSInfo__contains=i_data)| Q(DiskTotal__contains=i_data)| Q(Role__contains=i_data)| Q(Comments__contains=i_data))
 
