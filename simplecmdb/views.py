@@ -43,15 +43,8 @@ def CollectHostInfo(req):
 
 @csrf_exempt
 def get_server_and_pd():
-	all_servers = cache.get('all_servers')
-	if not all_servers:
-		all_servers = Server.objects.all()
-		cache.set('all_servers', all_servers, 1800)
-
-	all_pds = cache.get('all_pds')
-	if not all_pds:
-		all_pds = PD.objects.all()
-		cache.set('all_pds', all_pds, 1800)
+	all_servers = Server.objects.all()
+	all_pds = PD.objects.all()
 
 	return {'all_servers': all_servers, 'all_pds': all_pds}
 
@@ -155,6 +148,7 @@ def servers(req):
 		stat = ser_stat.get(ser.HostName)
 		stat_ = {}
 		
+		stat_['icmp'] = icmp
 		stat_['server'] = ser.HostName
 		stat_['ip'] = ser.IPAddress
 		stat_['os'] = ser.OSInfo
@@ -177,8 +171,6 @@ def servers(req):
 			swap_free_percent = stat.get('swap_ava_per')
 			if swap_free_percent:
 				stat_['swap_free_percent'] = str(round(swap_free_percent, 2)) + '%'
-
-			stat_['icmp'] = icmp
 
 		res.append(stat_)
 

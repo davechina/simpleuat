@@ -17,6 +17,9 @@
                             <dt>功能</dt>
                             <p>资源收集展示，集成了跳转到zabbix、web页面中调用远程桌面连接、CPU负载警示等功能。</p>
                             <p>注意：我们对后台取出的服务器资源数据和各PD的数据都设置了缓存，时效为30分钟！新添加的机器可能不会立刻展示在前台。</p>
+                            <br>
+
+                            <p>数据说明：表格中的CPU负载、可用内存百分比都来自zabbix，是该服务器上一小时的平均值。由于zabbix自身的计算需要时间，如果系统当前时间分钟数小于30，则往前推两个小时取值。</p>
 
                             <br>
 
@@ -25,6 +28,7 @@
                             <div class="alert alert-info"><strong>点击zabbix</strong>&nbsp;&nbsp; 跳转到该主机的zabbix监控页面</div>
                             <div class="alert alert-warning"><strong>点击远程桌面</strong>&nbsp;&nbsp;跳转到调用远程桌面连接的页面。仅适用于windows服务器！仅适用于IE浏览器，非IE浏览器需要下载相应插件！</div>
                             <div class="alert alert-info"><strong>点击webinfo</strong>&nbsp;&nbsp; 跳转到集群监控页面</div>
+                            <div class="alert alert-warning"><strong>基本状态</strong>&nbsp;&nbsp; 表格中除了展示服务器的基本信息外，还展示服务器的存活状态（CI标红）、一小时的CPU平均负载、一小时的内存可用百分比&nbsp;&nbsp;<strong>数据来源：zabbix</strong></div>
 
                     </div>
                 </div>
