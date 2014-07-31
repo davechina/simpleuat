@@ -52,9 +52,9 @@
                                         <td id="cpu">{{ s.cpu }} ({{ s.cpu_average_load }})</td>
 
                                         {% if "Windows" in s.os %}
-                                        <td id="mem">{{ s.memtotal }} ({{ s.mem_free_percent }})</td>
+                                        <td id="mem">{{ s.memtotal }} ({{ s.mem_usage_percent }})</td>
                                         {% else %}
-                                        <td id="mem">{{ s.memtotal }} ({{ s.swap_free_percent }})</td>
+                                        <td id="mem">{{ s.memtotal }} ({{ s.swap_usage_percent }})</td>
                                         {% endif %}
                                         <td id="disk">{{ s.disktotal }}</td>
                                         <!-- <td>{{ s.DiskInfo }}</td> -->

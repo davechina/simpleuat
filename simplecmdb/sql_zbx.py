@@ -53,7 +53,7 @@ def call_zbx(query='icmp'):
         ser_stat = zbx.get_zbx_stat(sql)
         d = {}
         for i in ser_stat:
-          d.update({i[0]:{'mem_ava_per':i[1], 'swap_ava_per':i[2], 'cpu_load':i[3]}})    
+          d.update({i[0]:{'mem_ava_per':i[1], 'swap_ava_per':i[2], 'cpu_load':i[3]}})
         return d       
 
     else:

@@ -155,7 +155,7 @@ def servers(req):
 			stat = ser_stat.get(ser.HostName.lower())
 		
 		if not stat:
-			stat_['cpu_average_load'], stat_['mem_free_percent'], stat_['swap_free_percent'] = None, None, None
+			stat_['cpu_average_load'], stat_['mem_usage_percent'], stat_['swap_usage_percent'] = None, None, None
 		else:
 			cpu_load = stat.get('cpu_load')
 			if cpu_load:
@@ -165,15 +165,15 @@ def servers(req):
 
 			mem_free_percent = stat.get('mem_ava_per')
 			if mem_free_percent:
-				stat_['mem_free_percent'] = str(round(mem_free_percent, 2)) + '%'
+				stat_['mem_usage_percent'] = str(round(100 - mem_free_percent, 2)) + '%'
 			else:
-				stat_['mem_free_percent'] = None
+				stat_['mem_usage_percent'] = None
 
 			swap_free_percent = stat.get('swap_ava_per')
 			if swap_free_percent:
-				stat_['swap_free_percent'] = str(round(swap_free_percent, 2)) + '%'
+				stat_['swap_usage_percent'] = str(round(100 - swap_free_percent, 2)) + '%'
 			else:
-				stat_['swap_free_percent'] = None
+				stat_['swap_usage_percent'] = None
 			
 
 		stat_['icmp'] = icmp
