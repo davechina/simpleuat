@@ -17,6 +17,15 @@
 		<ul class="nav navbar-nav navbar-right">
 
 			<li>
+					<form class="navbar-form full-width" action="/domain/" method="GET">{% csrf_token %}
+					<div class="form-group">
+						<input type="text" class="form-control" placeholder="域名搜索" name="getdomain">
+						<button type="submit" class="btn btn-search"><i class="fa fa-search"></i></button>
+					</div>
+				</form>
+			</li>			
+
+			<li>
 					<form class="navbar-form full-width" action="/search/" method="GET">{% csrf_token %}
 					<div class="form-group">
 						<input type="text" class="form-control" placeholder="服务器搜索" name="getserver">

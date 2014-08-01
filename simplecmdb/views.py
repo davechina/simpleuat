@@ -14,6 +14,8 @@ from .forms import AddServerForm
 from django.db.models import Q
 from django.core.cache import cache
 from . import sql_zbx
+import socket
+import fnmatch
 
 
 @csrf_exempt
@@ -229,4 +231,22 @@ def search(req):
 
 def help(req):
     return render_to_response("help.html", context_instance=RequestContext(req))
+
+
+@login_required(login_url='/login/')
+def domain(req):
+	data = get_server_and_pd()
+	all_ser = data.get('all_servers')
+
+	if req.method == "GET" and "getdomain" in req.GET:
+		i_data = req.GET.get('getdomain').encode('utf8')
+		o_data = socket.gethostbyname(i_data)
+
+		if fnmatch.fnmatch(o_data, '10.2.29.*'):
+			uat_webinfo = "http://opskits.uat.qa.nt.ctripcorp.com/Pool/List?Device=&Product=&Status=&Keyword=%s" % o_data
+			return redirect(uat_webinfo)
+		else:
+
+			ser = filter(lambda x : x.get('ip') == o_data, all_ser)
+			return render_to_response("result.html",  {'serverinfo': ser}, context_instance=RequestContext(req))
 
