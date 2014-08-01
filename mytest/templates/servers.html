@@ -49,7 +49,7 @@
                                         {% endif %}
                                         <td id="ip">{{ s.ip }}</td>
                                         <td id="os">{{ s.os }}</td>
-                                        <td id="cpu">{{ s.cpu }} ({{ s.cpu_load }})</td>
+                                        <td id="cpu">{{ s.cpu }} ({{ s.cpu_average_load }})</td>
 
                                         {% if "Windows" in s.os %}
                                         <td id="mem">{{ s.memtotal }} ({{ s.mem_usage_percent }})</td>
