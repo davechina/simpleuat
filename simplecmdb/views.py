@@ -228,5 +228,5 @@ def search(req):
 
 
 def help(req):
-    return render_to_response("help.html")
+    return render_to_response("help.html", context_instance=RequestContext(req))
 
