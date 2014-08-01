@@ -158,12 +158,14 @@ def servers(req):
 def pd(req, pd_name):
 	data = get_server_and_pd()
 	pds = data.get('all_pds')
-	pd_ser = data.get('all_servers')
+	all_ser = data.get('all_servers')
 
 	try:
-		pd_contact = pds.get(Name=pd_name).Contact		
+		pd_contact = pds.get(Name=pd_name).Contact
+		pd_ser = filter(lambda x : x.get('pd') == pd_name.encode('utf8'), all_ser)
 	except:
 		pd_contact = None
+		pd_ser = None
 
 	return render_to_response("pd.html", {'pd_ser': pd_ser, 'pd_name':pd_name, 'pd_contact':pd_contact}, context_instance=RequestContext(req))	
 
