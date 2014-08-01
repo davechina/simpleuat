@@ -39,33 +39,46 @@
 
                                 <tbody role="alert" aria-live="polite" aria-relevant="all">
                                     {% for s in serverinfo %}
-                                    <tr id={{s.IPAddress}}>            
-                                        <td id="host">{{ s.HostName }}</td>
-                                        <td id="ip">{{ s.IPAddress }}</td>
-                                        <td id="os">{{ s.OSInfo }}</td>
-                                        <td id="cpu">{{ s.CPUInfo }}</td>
-                                        <td id="mem">{{ s.MemInfo }}</td>
-                                        <td id="disk">{{ s.DiskTotal }}</td>
-                                        <!-- <td>{{ s.DiskInfo }}</td> -->
-                                        {% if perms.can_change_server %}
-                                        <td class="editbox" id="role">{{ s.Role }}</td>
-                                        <td class="editbox" id="pd">{{ s.Pd }}</td>
-                                        <td class="editbox" id="comments">{{ s.Comments }}</td>
-                                        {% else %}
-                                        <td id="role">{{ s.Role }}</td>
-                                        <td id="pd">{{ s.Pd }}</td>
-                                        <td id="comments">{{ s.Comments }}</td>
-                                        {% endif %}
-                                        <td>
-                                            <a href="{% url 'zabbix' s.HostName %}" target="_blank"><img src="/static/zabbix.ico" height="16" width="16" alt="zabbix" title="zabbix"></a>
-                                            {% if "Windows" in s.OSInfo %}
-                                            <a href="{% url 'connect' s.IPAddress %}" target="_blank"><img src="/static/RDP.png" height="16" width="16" alt="远程桌面" title="远程桌面"></a>
+
+                                        <tr id='details'>
+                                            {% if s.icmp == '1' %}
+                                            <td id="host">{{ s.server }}</td>                                      
+                                            {% elif s.icmp == '0' %}
+                                            <td id="host"><font color="red">{{ s.server }}</font></td>
                                             {% else %}
-                                            <img src="/static/RDP.png" height="16" width="16" alt="远程桌面" title="远程桌面">
+                                            <td id="host"><font color="blue">{{ s.server }}</font></td>
                                             {% endif %}
-                                            <a href="http://opskits.uat.qa.nt.ctripcorp.com/Pool/List?Device=&Product=&Status=&Keyword={{s.IPAddress}}" target="_blank"><img src="/static/webinfo.jpg" height="16" width="16" alt="webinfo" title="webinfo"></a>
-                                        </td>
-                                    </tr>
+                                            <td id="ip">{{ s.ip }}</td>
+                                            <td id="os">{{ s.os }}</td>
+                                            <td id="cpu">{{ s.cpu }} ({{ s.cpu_load }})</td>
+
+                                            {% if "Windows" in s.os %}
+                                            <td id="mem">{{ s.memtotal }} ({{ s.mem_usage_percent }})</td>
+                                            {% else %}
+                                            <td id="mem">{{ s.memtotal }} ({{ s.swap_usage_percent }})</td>
+                                            {% endif %}
+                                            <td id="disk">{{ s.disktotal }}</td>
+                                            <!-- <td>{{ s.DiskInfo }}</td> -->
+                                            {% if perms.can_change_server %}
+                                            <td class="editbox" id="role">{{ s.role }}</td>
+                                            <td class="editbox" id="pd">{{ s.pd }}</td>
+                                            <td class="editbox" id="comments">{{ s.comments }}</td>
+                                            {% else %}
+                                            <td id="role">{{ s.role }}</td>
+                                            <td id="pd">{{ s.pd }}</td>
+                                            <td id="comments">{{ s.comments }}</td>
+                                            {% endif %}
+                                            <td>
+                                                <a href="{% url 'zabbix' s.server %}" target="_blank"><img src="/static/zabbix.ico" height="16" width="16" alt="zabbix" title="zabbix"></a>
+                                                {% if "Windows" in s.os %}
+                                                <a href="{% url 'connect' s.ip %}" target="_blank"><img src="/static/RDP.png" height="16" width="16" alt="远程桌面" title="远程桌面"></a>
+                                                {% else %}
+                                                <img src="/static/RDP.png" height="16" width="16" alt="远程桌面" title="远程桌面">
+                                                {% endif %}
+                                                <a href="http://opskits.uat.qa.nt.ctripcorp.com/Pool/List?Device=&Product=&Status=&Keyword={{s.IPAddress}}" target="_blank"><img src="/static/webinfo.jpg" height="16" width="16" alt="webinfo" title="webinfo"></a>
+                                            </td>
+                                        </tr>                                    
+
                                     {% endfor %}
                                 </tbody>
 

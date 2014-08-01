@@ -23,7 +23,7 @@
 					</a>
 
 					<ul class="sub-menu" style="overflow: hidden; display: none;">
-						{% for pd, count in pds %}
+						{% for pd in sidebar_all_pds %}
 							<li><a href="{% url 'pd' pd %}">{{pd}}</a></li>
 						{% endfor %}
 					</ul>

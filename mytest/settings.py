@@ -191,14 +191,15 @@ TEMPLATE_CONTEXT_PROCESSORS = (
     "django.contrib.messages.context_processors.messages",
 
     'mytest.context_processors.auth_processor',
+    'mytest.context_processors.sidebar_params',
     )
 
 
 # CAS
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'
-CAS_SERVER_URL = "https://cas.ctripcorp.com/caso/"
-# CAS_SERVER_URL = "http://cas.uat.qa.nt.ctripcorp.com/caso/"
+# CAS_SERVER_URL = "https://cas.ctripcorp.com/caso/"
+CAS_SERVER_URL = "http://cas.uat.qa.nt.ctripcorp.com/caso/"
 CAS_LOGOUT_COMPLETELY = True
 CAS_IGNORE_REFERER = True
 CAS_REDIRECT_URL = "/"
