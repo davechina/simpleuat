@@ -14,7 +14,7 @@
 	                <h4 class="panel-title">在线提交数据</h4>
 	            </div>
 	            <div class="panel-body">
-	                <form action="/addserver/" method="POST">{% csrf_token %}
+	                <form action="/server/" method="POST">{% csrf_token %}
 	                	{% for f in form %}
 	                    <div class="form-group">
 	                        <label class="col-sm-1 control-label">{{ f.label_tag }}:</label>

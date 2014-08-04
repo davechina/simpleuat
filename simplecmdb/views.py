@@ -17,6 +17,11 @@ from . import sql_zbx
 import socket
 import fnmatch
 
+from rest_framework import status
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from simplecmdb.serializers import ServerSerializer
+
 
 @csrf_exempt
 def CollectHostInfo(req):
@@ -194,39 +199,31 @@ def connect(req, ip):
 
 
 @login_required(login_url='/login/')
-@permission_required('simplecmdb.can_add_server')
-def addserver(req):
-	if req.method == "POST":
-		form = AddServerForm(req.POST)
-		if form.is_valid():
-			data = form.cleaned_data
-
-			ser = Server(HostName=data.get('HostName').strip(), IPAddress=data.get('IPAddress').strip(),  CPUInfo=data.get('CPUInfo'), MemInfo=data.get('MemInfo'), OSInfo=data.get('OSInfo'), DiskTotal=data.get('DiskTotal'), Role=data.get('Role'), Comments=data.get('Comments'), Pd=PD.objects.get(Name=data.get('Pd')))
-			ser.save()
-			return redirect('/')
-	else:
-		form = AddServerForm()
-
-	return render_to_response("addserver.html", {'form': form}, context_instance=RequestContext(req))
-
-
-@login_required(login_url='/login/')
-def search(req):
-	data = get_server_and_pd()
-	all_ser = data.get('all_servers')
-	o_data = []
-	
+def server(req):
 	if req.method == "GET" and "getserver" in req.GET:
+		data = get_server_and_pd()
+		all_ser = data.get('all_servers')
+		o_data = []
 		i_data = req.GET.get("getserver").encode('utf8')
 
 		for ser in all_ser:
 			for v in ser.values():
 				if v and i_data in v:
-					o_data.append(ser)
-
+					o_data.append(ser)		
 		return render_to_response("result.html",  {'serverinfo': o_data}, context_instance=RequestContext(req))
 
-	return render_to_response("result.html",  {'serverinfo': o_data}, context_instance=RequestContext(req))
+	elif req.method == 'POST':
+		if req.user.has_perm('simplecmdb.can_add_server'):
+			form = AddServerForm(req.POST)
+			if form.is_valid():
+				data = form.cleaned_data
+				ser = Server(HostName=data.get('HostName').strip(), IPAddress=data.get('IPAddress').strip(),  CPUInfo=data.get('CPUInfo'), MemInfo=data.get('MemInfo'), OSInfo=data.get('OSInfo'), DiskTotal=data.get('DiskTotal'), Role=data.get('Role'), Comments=data.get('Comments'), Pd=PD.objects.get(Name=data.get('Pd')))
+				ser.save()
+				return redirect('/')
+
+	elif req.method == 'GET':
+		form = AddServerForm()
+		return render_to_response("addserver.html", {'form': form}, context_instance=RequestContext(req))		
 
 
 def help(req):
@@ -250,3 +247,22 @@ def domain(req):
 			ser = filter(lambda x : x.get('ip') == o_data, all_ser)
 			return render_to_response("result.html",  {'serverinfo': ser}, context_instance=RequestContext(req))
 
+
+@api_view(['GET'])
+def servers_list(req):
+	if req.method == 'GET':
+		data = get_server_and_pd()
+		all_ser = data.get('all_servers')
+		serializer = ServerSerializer(all_ser, many=True)
+		return Response(serializer.data)
+
+
+@api_view(['GET'])
+def server_detail(req, host):
+	data = get_server_and_pd()
+	all_ser = data.get('all_servers')
+	ser = filter(lambda x : x.get('server') == host.encode('utf8'), all_ser)
+
+	if req.method == 'GET':
+		serializer = ServerSerializer(ser)
+		return Response(serializer.data)
