@@ -204,7 +204,7 @@ def server(req):
 		data = get_server_and_pd()
 		all_ser = data.get('all_servers')
 		o_data = []
-		i_data = req.GET.get("getserver").encode('utf8')
+		i_data = req.GET.get("getserver").strip().encode('utf8')
 
 		for ser in all_ser:
 			for v in ser.values():
@@ -236,7 +236,7 @@ def domain(req):
 	all_ser = data.get('all_servers')
 
 	if req.method == "GET" and "getdomain" in req.GET:
-		i_data = req.GET.get('getdomain').encode('utf8')
+		i_data = req.GET.get('getdomain').strip().encode('utf8')
 		o_data = socket.gethostbyname(i_data)
 
 		if fnmatch.fnmatch(o_data, '10.2.29.*'):
