@@ -28,9 +28,9 @@ class GetZabbixData(object):
 
 
 def call_zbx(query='icmp'):
-    user = r'uapp_zbxreader'
-    password = r'wY4slvrnHcc7@tw'
-    host = r'10.2.22.19'
+    user = r'*'
+    password = r'*'
+    host = r'*'
     port = 55666
     db = 'zabbix'
     zbx = GetZabbixData(host, port, user, password, db)
