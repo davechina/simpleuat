@@ -107,7 +107,7 @@ def get_server_and_pd():
 			
 
 		stat_['icmp'] = icmp
-		stat_['server'] = ser.HostName.upper().encode('utf8')
+		stat_['server'] = ser.HostName.encode('utf8')
 		stat_['ip'] = ser.IPAddress.encode('utf8')
 		stat_['os'] = ser.OSInfo.encode('utf8')
 		stat_['cpu'] = ser.CPUInfo.encode('utf8')
@@ -208,8 +208,10 @@ def server(req):
 
 		for ser in all_ser:
 			for v in ser.values():
-				if v and i_data in v:
-					o_data.append(ser)		
+				# if v and i_data in v:
+				if v:
+					if i_data.upper() in v or i_data.lower() in v:
+						o_data.append(ser)
 		return render_to_response("result.html",  {'serverinfo': o_data}, context_instance=RequestContext(req))
 
 	elif req.method == 'POST':
