@@ -72,11 +72,7 @@ class ZabbixOperation(object):
 		res = response.get('result')
 
 		if res:
-<<<<<<< .merge_file_a08644
-			return [{'templateid': i.get('templateid')} for i in res]	
-=======
-			return [i.get('templateid') for i in res]	
->>>>>>> .merge_file_a06880
+			return [{'templateid': i.get('templateid')} for i in res]
 
 
 	def get_hostid(self, ip):
@@ -154,15 +150,7 @@ class ZabbixOperation(object):
 				                "groupid": self.groupid
 				            }
 				        ],
-<<<<<<< .merge_file_a08644
 				        "templates": self.templateid,
-=======
-				        "templates": [
-				            {
-				                "templateid": self.templateid
-				            }
-				        ],
->>>>>>> .merge_file_a06880
 				        "inventory": {
 				            "macaddress_a": "01234",
 				            "macaddress_b": "56768"
@@ -188,27 +176,18 @@ if __name__ == '__main__':
 	# if hostid:
 	# 	grap_url = 'http://zabbixserver.uat.sh.ctriptravel.com/host_screen.php?hostid=%s&sid=8cb624a10c681eb8' % zab.get_hostid('SVR2084HP360')
 
-<<<<<<< .merge_file_a08644
-
 	# groupid = zab.get_hostgroupid('uat-nt-windows')
 	# templateid = zab.get_templateid('uat-Template OS Windows', 'Template App IIS WP', 'Template .NET CLR')
 	# print templateid
 	# host = 'UAT0150'
 	# ip = '10.2.24.74'
 	# result = zab.create_host(host, ip, groupid, templateid)
-=======
-	# result = zab.create_host('test', '1.1.1.1', 9, 10124)
-	# if result.get('result'):
-	# 	print 'create success.'
-	# else:
-	# 	print 'create failed.', result.get('error').get('data')
 
 	# groupid = zab.get_hostgroupid('uat-nt-windows')
 	# templateid = zab.get_templateid('uat-Template OS Windows', 'Template App IIS WP', 'Template .NET CLR')
 	# host = ''
 	# ip = ''
 	# result = zab.create_host(host.upper(), ip, groupid, templateid)
->>>>>>> .merge_file_a06880
 
 	# if not result.get('result'):
 	# 	err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
