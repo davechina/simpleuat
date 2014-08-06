@@ -13,21 +13,6 @@ class ZabbixOperation(object):
 		self.user = user
 		self.passwd = passwd
 
-	def get_data(self, data):
-		req = urllib2.Request(self.url, data)
-		req.add_header('Content-Type', 'application/json')
-
-		try:
-			response = urllib2.urlopen(req)
-			result = json.loads(response.read())
-			response.close()
-			return result
-		except URLError, e:
-			if hasattr(e, 'reason'):
-				print e.reason
-			elif hasattr(e, 'code'):
-				print e.code, e.read()
-
 
 	def get_authid(self):
 		data = json.dumps({
@@ -45,13 +30,58 @@ class ZabbixOperation(object):
 		return authID
 
 
+	def get_data(self, data):
+		req = urllib2.Request(self.url, data)
+		req.add_header('Content-Type', 'application/json')
+
+		try:
+			response = urllib2.urlopen(req)
+			result = json.loads(response.read())
+			response.close()
+			return result
+		except URLError, e:
+			if hasattr(e, 'reason'):
+				print e.reason
+			elif hasattr(e, 'code'):
+				print e.code, e.read()
+
+
+	def get_templateid(self, *templatenames):
+		"""
+			template object:
+			https://www.zabbix.com/documentation/2.0/manual/appendix/api/template/definitions
+		"""
+		self.templatenames = templatenames
+		templates = [t for t in self.templatenames]
+
+		data = json.dumps({
+			    "jsonrpc": "2.0",
+			    "method": "template.get",
+			    "params": {
+			        "output": "extend",
+			        "filter": {
+			            "host": templates
+			        }
+			    },
+			    "auth": self.get_authid(),
+			    "id": 1
+			})
+
+		response = self.get_data(data)
+		res = response.get('result')
+
+		if res:
+			return [i.get('templateid') for i in res]	
+
+
 	def get_hostid(self, ip):
+		self.ip = ip
 		data = json.dumps({
 			'jsonrpc': '2.0',
 			'method': 'host.get',
 			'params': {
 				'output': ['hostid', 'host', 'status'],
-				'filter': {'host': ip}
+				'filter': {'host': self.ip}
 				},
 			'auth': self.get_authid(),
 			'id': 1
@@ -59,10 +89,82 @@ class ZabbixOperation(object):
 
 		response = self.get_data(data)
 		res = response.get('result')
+
 		if res:
 			return res[0].get('hostid')
-		else:
-			return None
+
+
+	def get_hostgroupid(self, groupname):
+		self.groupname = groupname
+		data = json.dumps({		
+			    "jsonrpc": "2.0",
+			    "method": "hostgroup.get",
+			    "params": {
+			        "output": "extend",
+			        "filter": {
+			            "name": [
+			            	self.groupname
+			            ]
+			        }
+			    },
+			    "auth": self.get_authid(),
+			    "id": 1
+			})
+
+		response = self.get_data(data)
+		res = response.get('result')
+
+		if res:
+			return res[0].get('groupid')
+		
+
+	def create_host(self, host, ip, groupid, templateid):
+		"""
+			host interfaces object: 
+			https://www.zabbix.com/documentation/2.0/manual/appendix/api/hostinterface/definitions#host_interface
+		"""
+
+		self.host = host
+		self.ip = ip
+		self.groupid = groupid
+		self.templateid = templateid
+
+		data = json.dumps({
+				    "jsonrpc": "2.0",
+				    "method": "host.create",
+				    "params": {
+				        "host": self.host,
+				        "interfaces": [
+				            {
+				                "type": 1,
+				                "main": 1,
+				                "useip": 1,
+				                "ip": self.ip,
+				                "dns": "",
+				                "port": "10050"
+				            }
+				        ],
+				        "groups": [
+				            {
+				                "groupid": self.groupid
+				            }
+				        ],
+				        "templates": [
+				            {
+				                "templateid": self.templateid
+				            }
+				        ],
+				        "inventory": {
+				            "macaddress_a": "01234",
+				            "macaddress_b": "56768"
+				        }
+				    },
+				    "auth": self.get_authid(),
+				    "id": 1
+				})
+
+		response = self.get_data(data)
+		return response
 
 
 if __name__ == '__main__':
@@ -76,4 +178,19 @@ if __name__ == '__main__':
 
 	# if hostid:
 	# 	grap_url = 'http://zabbixserver.uat.sh.ctriptravel.com/host_screen.php?hostid=%s&sid=8cb624a10c681eb8' % zab.get_hostid('SVR2084HP360')
-	
+
+	# result = zab.create_host('test', '1.1.1.1', 9, 10124)
+	# if result.get('result'):
+	# 	print 'create success.'
+	# else:
+	# 	print 'create failed.', result.get('error').get('data')
+
+	# groupid = zab.get_hostgroupid('uat-nt-windows')
+	# templateid = zab.get_templateid('uat-Template OS Windows', 'Template App IIS WP', 'Template .NET CLR')
+	# host = ''
+	# ip = ''
+	# result = zab.create_host(host.upper(), ip, groupid, templateid)
+
+	# if not result.get('result'):
+	# 	err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
+	# 	print err_message
