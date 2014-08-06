@@ -263,7 +263,7 @@ def server(req):
 				
 				if not result.get('result'):
 					err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
-					print err_message				
+					return HttpResponse(err_message)			
 
 				return redirect('/')
 
