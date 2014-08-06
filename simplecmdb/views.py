@@ -219,8 +219,48 @@ def server(req):
 			form = AddServerForm(req.POST)
 			if form.is_valid():
 				data = form.cleaned_data
-				ser = Server(HostName=data.get('HostName').strip(), IPAddress=data.get('IPAddress').strip(),  CPUInfo=data.get('CPUInfo'), MemInfo=data.get('MemInfo'), OSInfo=data.get('OSInfo'), DiskTotal=data.get('DiskTotal'), Role=data.get('Role'), Comments=data.get('Comments'), Pd=PD.objects.get(Name=data.get('Pd')))
+
+				zabbix_api = 'http://zabbixserver.qa.nt.ctripcorp.com/api_jsonrpc.php'
+				zabbix_user = 'admin'
+				zabbix_password = 'zabbix'
+				zab = ZabbixOperation(zabbix_api, zabbix_user, zabbix_password)
+
+				host = data.get('HostName').strip()
+				ip = data.get('IPAddress').strip()
+				cpu = data.get('CPUInfo')
+				mem = data.get('MemInfo')
+				os = data.get('OSInfo')
+				disk = data.get('DiskTotal')
+				role = data.get('Role')
+				comments = data.get('Comments')
+				pd = PD.objects.get(Name=data.get('Pd'))
+
+				ser = Server(HostName=host, IPAddress=ip,  CPUInfo=cpu, MemInfo=mem, OSInfo=os, DiskTotal=disk, Role=role, Comments=comments, Pd=pd)				
 				ser.save()
+
+				"""
+				UAT zabbix group name:
+					uat-nt-linux
+					uat-nt-windows
+
+				UAT zabbix template name:
+					linux server template:
+						uat-Template OS Linux
+
+					windows server template:
+						uat-Template OS Windows
+						Template App IIS WP
+						Template .NET CLR
+				"""
+
+				if 'Windows' in os:
+					groupid = zab.get_hostgroupid('uat-nt-windows')
+					templateid = zab.get_templateid('uat-Template OS Windows', 'Template App IIS WP', 'Template .NET CLR')
+				elif 'CentOS' in os:
+					groupid = zab.get_hostgroupid('uat-nt-linux')
+					templateid = zab.get_templateid('uat-Template OS Linux')
+				result = zab.create_host(host.upper(), ip, groupid, templateid)
+
 				return redirect('/')
 
 	elif req.method == 'GET':
