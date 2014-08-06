@@ -259,7 +259,11 @@ def server(req):
 				elif 'CentOS' in os:
 					groupid = zab.get_hostgroupid('uat-nt-linux')
 					templateid = zab.get_templateid('uat-Template OS Linux')
-				result = zab.create_host(host.upper(), ip, groupid, templateid)
+				result = zab.create_host(host, ip, groupid, templateid)
+				
+				if not result.get('result'):
+					err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
+					print err_message				
 
 				return redirect('/')
 
