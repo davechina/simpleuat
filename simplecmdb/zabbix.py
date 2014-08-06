@@ -178,16 +178,9 @@ if __name__ == '__main__':
 
 	# groupid = zab.get_hostgroupid('uat-nt-windows')
 	# templateid = zab.get_templateid('uat-Template OS Windows', 'Template App IIS WP', 'Template .NET CLR')
-	# print templateid
 	# host = 'UAT0150'
 	# ip = '10.2.24.74'
 	# result = zab.create_host(host, ip, groupid, templateid)
-
-	# groupid = zab.get_hostgroupid('uat-nt-windows')
-	# templateid = zab.get_templateid('uat-Template OS Windows', 'Template App IIS WP', 'Template .NET CLR')
-	# host = ''
-	# ip = ''
-	# result = zab.create_host(host.upper(), ip, groupid, templateid)
 
 	# if not result.get('result'):
 	# 	err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
