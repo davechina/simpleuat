@@ -40,7 +40,7 @@ class ZabbixOperation(object):
 			result = json.loads(response.read())
 			response.close()
 			return result
-		except URLError, e:
+		except urllib2.URLError, e:
 			if hasattr(e, 'reason'):
 				print e.reason
 			elif hasattr(e, 'code'):
