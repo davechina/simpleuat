@@ -42,9 +42,9 @@ class ZabbixOperation(object):
 			return result
 		except urllib2.URLError, e:
 			if hasattr(e, 'reason'):
-				print e.reason
+				return e.reason
 			elif hasattr(e, 'code'):
-				print e.code, e.read()
+				return e.code, e.read()
 
 
 	def get_templateid(self, *templatenames):
@@ -160,16 +160,16 @@ class ZabbixOperation(object):
 				    "id": 1
 				})
 
-		response = self.get_data(data)
-		return response
+		resp = self.get_data(data)
+		return resp
 
 
-if __name__ == '__main__':
-	zabbix_api = 'http://zabbixserver.qa.nt.ctripcorp.com/api_jsonrpc.php'
-	zabbix_user = 'admin'
-	zabbix_password = 'zabbix'
+# if __name__ == '__main__':
+# 	zabbix_api = 'http://zabbixserver.qa.nt.ctripcorp.com/api_jsonrpc.php'
+# 	zabbix_user = 'admin'
+# 	zabbix_password = 'zabbix'
 
-	zab = ZabbixOperation(zabbix_api, zabbix_user, zabbix_password)
+# 	zab = ZabbixOperation(zabbix_api, zabbix_user, zabbix_password)
 	# print zab.get_hostid('192.168.82.56')
 	# hostid = zab.get_hostid('SVR2084HP360')
 
