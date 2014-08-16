@@ -260,12 +260,13 @@ def server(req):
 					groupid = zab.get_hostgroupid('uat-nt-linux')
 					templateid = zab.get_templateid('uat-Template OS Linux')
 
-				result = zab.create_host(host, ip, groupid, templateid)
-				
-				if not result.get('result'):
-					err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
-					return HttpResponse(err_message)
+				if groupid and templateid:
+					result = zab.create_host(host, ip, groupid, templateid)
 
+				# if not result.get('result'):
+				# 	err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
+				# 	return HttpResponse(err_message)
+					return redirect('/')
 				return redirect('/')
 
 	elif req.method == 'GET':
