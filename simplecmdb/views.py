@@ -16,6 +16,7 @@ from django.core.cache import cache
 from . import sql_zbx
 import socket
 import fnmatch
+import copy
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -208,9 +209,11 @@ def server(req):
 
 		for ser in all_ser:
 			for v in ser.values():
-				# if v and i_data in v:
 				if v:
-					if i_data.upper() in v or i_data.lower() in v:
+					v1 = copy.deepcopy(v)
+					for index, value in enumerate(v1):
+						v1[index] = v1[index].lower()
+					if i_data.lower() in v1:
 						o_data.append(ser)
 		return render_to_response("result.html",  {'serverinfo': o_data}, context_instance=RequestContext(req))
 
