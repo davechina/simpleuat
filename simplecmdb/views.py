@@ -209,9 +209,7 @@ def server(req):
 		for ser in all_ser:
 			for v in ser.values():
 				if v:
-					for index, value in enumerate(v1):
-						v1[index] = v1[index].lower()
-					if i_data.lower() in v1:
+					if i_data.lower() in v or i_data.upper() in v:
 						o_data.append(ser)
 		return render_to_response("result.html",  {'serverinfo': o_data}, context_instance=RequestContext(req))
 
