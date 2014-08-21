@@ -16,7 +16,6 @@ from django.core.cache import cache
 from . import sql_zbx
 import socket
 import fnmatch
-import copy
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -210,7 +209,6 @@ def server(req):
 		for ser in all_ser:
 			for v in ser.values():
 				if v:
-					v1 = copy.deepcopy(v)
 					for index, value in enumerate(v1):
 						v1[index] = v1[index].lower()
 					if i_data.lower() in v1:
