@@ -16,7 +16,8 @@ register = template.Library()		# 注册自定义标签和过滤器
 @stringfilter
 def check_image(img):
 	img_path = os.path.join(settings.STATIC_ROOT, 'color/img/5102/')
-	all_img = map(lambda x : os.path.splitext(x)[0].lower().decode('gbk'), os.listdir(img_path))
+	# all_img = map(lambda x : os.path.splitext(x)[0].lower().decode('gbk'), os.listdir(img_path))
+	all_img = map(lambda x : os.path.splitext(x)[0].lower(), os.listdir(img_path))
 
 	if img.lower() in all_img:
 		return True
