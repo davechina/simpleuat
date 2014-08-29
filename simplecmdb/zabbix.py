@@ -199,8 +199,11 @@ class ZabbixOperation(object):
 				    "id": 1
 				})
 
-		resp = self.get_data(data)
-		return resp
+		response = self.get_data(data)
+		res = response.get('result')
+
+		if res:
+			return res
 
 
 	def update_proxy(self, proxyid, hosts):
@@ -214,7 +217,7 @@ class ZabbixOperation(object):
 			        "proxyid": self.proxyid,
 			        "hosts": self.hosts
 			    },
-			    "auth": "038e1d7b1735c6a5436ee9eae095879e",
+			    "auth": self.get_authid(),
 			    "id": 1
 			})
 
@@ -222,7 +225,7 @@ class ZabbixOperation(object):
 		res = response.get('result')
 
 		if res:
-			return res.get('proxyids')
+			return res
 
 
 if __name__ == '__main__':

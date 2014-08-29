@@ -263,14 +263,16 @@ def server(req):
 
 				if groupid and templateid:
 					result = zab.create_host(host, ip, groupid, templateid)
+					hostid = result.get('hostids')[0]
 
-					hostid = zab.get_hostid(ip)
+					all_proxyids = [p.get("proxyid") for p in  zab.get_proxyids()]
+					proxy = random.choice(all_proxyids)
 
-					proxyid = random.choice([p.get("proxyid") for p in  zab.get_proxyids()])
-					hosts = [host.get('hostid') for host in zab.get_hosts_monitored_by_proxy(proxyid)]
+					monitored = zab.get_hosts_monitored_by_proxy(proxy)
+					hosts = [i.get('hostid') for i in monitored]
+					hosts.append(hostid)
 
-					proxy = zab.update_proxy(proxyid, hosts.append(hostid))
-
+					out = zab.update_proxy(proxy, hosts)
 
 				# if not result.get('result'):
 				# 	err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
@@ -325,6 +327,6 @@ def server_detail(req, host):
 		return Response(serializer.data)
 
 
-# def charts(req):
+def charts(req):
 
-# 	return render_to_response("charts.html")
+	return render_to_response("charts.html", context_instance=RequestContext(req))
