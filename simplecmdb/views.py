@@ -262,27 +262,29 @@ def server(req):
 					templateid = zab.get_templateid('uat-Template OS Linux')
 
 				if groupid and templateid:
-					result = zab.create_host(host, ip, groupid, templateid)
-					hostid = result.get('hostids')[0]
+					result = zab.create_host(host, ip, groupid, templateid).get('result')
 
-					all_proxyids = [p.get("proxyid") for p in  zab.get_proxyids()]
-					proxy = random.choice(all_proxyids)
+					if result:
+						hostid = result.get('hostids')[0]
+						proxy = random.choice([p.get("proxyid") for p in  zab.get_proxyids()])
+						hosts = [i.get('hostid') for i in zab.get_hosts_monitored_by_proxy(proxy)]
+						hosts.append(hostid)
 
-					monitored = zab.get_hosts_monitored_by_proxy(proxy)
-					hosts = [i.get('hostid') for i in monitored]
-					hosts.append(hostid)
+						update_result = zab.update_proxy(proxy, hosts)
 
-					out = zab.update_proxy(proxy, hosts)
-
-				# if not result.get('result'):
-				# 	err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
-				# 	return HttpResponse(err_message)
-					return redirect('/')
-				return redirect('/')
+						if update_result:
+							return redirect("/")
+						else:
+							message = 'Add host to proxy failed. Error message: %s' % result.get('error').get('data')
+							render_to_response("addserver.html", {'message': message}, context_instance=RequestContext(req))
+					else:
+						message = 'Add host to zabbix failed. Error message: %s' % result.get('error').get('data')
+						render_to_response("addserver.html", {'message': message}, context_instance=RequestContext(req))
+				return redirect("/")
 
 	elif req.method == 'GET':
 		form = AddServerForm()
-		return render_to_response("addserver.html", {'form': form}, context_instance=RequestContext(req))		
+		return render_to_response("addserver.html", {'form': form}, context_instance=RequestContext(req))
 
 
 def help(req):
