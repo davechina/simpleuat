@@ -29,5 +29,4 @@ def random_image(path):
 	# img_path = os.path.join(settings.STATIC_ROOT, 'color/img/5102/')
 	img_path = os.path.join(settings.STATIC_ROOT, path)
 	rand_img = random.choice(os.listdir(img_path))
-	print os.path.join(settings.STATIC_URL, path, u'%s' % rand_img)
 	return os.path.join(settings.STATIC_URL, path, u'%s' % rand_img)
