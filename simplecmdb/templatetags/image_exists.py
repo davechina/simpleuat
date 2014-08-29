@@ -6,6 +6,7 @@ import random
 from django import template
 from django.conf import settings
 from django.template.defaultfilters import stringfilter
+import locale
 
 # register
 register = template.Library()		# 注册自定义标签和过滤器
@@ -18,8 +19,9 @@ def check_image(img):
 	img_path = os.path.join(settings.STATIC_ROOT, 'color/img/5102/')
 	all_img = map(lambda x : os.path.splitext(x)[0].lower(), os.listdir(img_path))
 
-	#前端传递给后端的是unicode字符串，可以使用isinstance()看下；需要转化成str后，调用lower()方法进行比较
-	if img.encode('gbk').lower() in all_img:
+	#前端传递给后端的是unicode字符串，可以使用isinstance()看下；需要转化成str后，调用lower()方法进行比较。windows平台编码应该是gbk，linux下应该是utf-8。
+	sys_code = locale.getdefaultlocale()[1]
+	if img.encode(sys_code).lower() in all_img:
 		return True
 
 
