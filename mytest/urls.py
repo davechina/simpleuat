@@ -31,6 +31,7 @@ urlpatterns += patterns('simplecmdb.views',
     # url(r'^zbx/$', 'get_zbx_data'),
     url(r'^domain/$', 'domain'), 
     url(r'^server/$', 'server'), 
+    # url(r'^charts/$', 'charts'), 
     )
 
 

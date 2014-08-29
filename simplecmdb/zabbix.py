@@ -117,7 +117,46 @@ class ZabbixOperation(object):
 
 		if res:
 			return res[0].get('groupid')
-		
+
+
+	def get_proxyids(self):
+		data = json.dumps({
+		    "jsonrpc": "2.0",
+		    "method": "proxy.get",
+		    "params": {
+		    	"output": "extend"
+		    },
+		    "auth": self.get_authid(),
+		    "id": 1	
+		})
+
+		response = self.get_data(data)
+		res = response.get('result')
+
+		if res:
+			return [{"proxy": i.get('host'), "proxyid" : i.get('proxyid')} for i in res]
+	
+
+	def get_hosts_monitored_by_proxy(self, proxyids):
+		self.proxyids = proxyids
+
+		data = json.dumps({
+		    "jsonrpc": "2.0",
+		    "method": "proxy.get",
+		    "params": {
+		    	"proxyids": self.proxyids,
+		    	"selectHosts": ["name", "hostid"]
+		    },
+		    "auth": self.get_authid(),
+		    "id": 1			
+			})
+
+		response = self.get_data(data)
+		res = response.get('result')
+
+		if res:
+			return res[0].get('hosts')
+
 
 	def create_host(self, host, ip, groupid, templateid):
 		"""
@@ -164,12 +203,40 @@ class ZabbixOperation(object):
 		return resp
 
 
-# if __name__ == '__main__':
-# 	zabbix_api = 'http://zabbixserver.qa.nt.ctripcorp.com/api_jsonrpc.php'
-# 	zabbix_user = 'admin'
-# 	zabbix_password = 'zabbix'
+	def update_proxy(self, proxyid, hosts):
+		self.proxyid = proxyid
+		self.hosts = hosts
 
-# 	zab = ZabbixOperation(zabbix_api, zabbix_user, zabbix_password)
+		data = json.dumps({
+			    "jsonrpc": "2.0",
+			    "method": "proxy.update",
+			    "params": {
+			        "proxyid": self.proxyid,
+			        "hosts": self.hosts
+			    },
+			    "auth": "038e1d7b1735c6a5436ee9eae095879e",
+			    "id": 1
+			})
+
+		response = self.get_data(data)
+		res = response.get('result')
+
+		if res:
+			return res.get('proxyids')
+
+
+if __name__ == '__main__':
+	zabbix_api = 'http://zabbixserver.qa.nt.ctripcorp.com/api_jsonrpc.php'
+	zabbix_user = 'admin'
+	zabbix_password = 'zabbix'
+
+	zab = ZabbixOperation(zabbix_api, zabbix_user, zabbix_password)
+	# # print zab.get_proxyids()
+	# proxyids = [p.get("proxyid") for p in  zab.get_proxyids()]
+	# import random
+	# data = zab.get_hosts_monitored_by_proxy(random.choice(proxyids))
+	# print [i.get('hostid') for i in data]
+
 	# print zab.get_hostid('192.168.82.56')
 	# hostid = zab.get_hostid('SVR2084HP360')
 

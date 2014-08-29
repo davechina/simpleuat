@@ -16,6 +16,8 @@ from django.core.cache import cache
 from . import sql_zbx
 import socket
 import fnmatch
+import random
+import os
 
 from rest_framework import status
 from rest_framework.decorators import api_view
@@ -262,6 +264,14 @@ def server(req):
 				if groupid and templateid:
 					result = zab.create_host(host, ip, groupid, templateid)
 
+					hostid = zab.get_hostid(ip)
+
+					proxyid = random.choice([p.get("proxyid") for p in  zab.get_proxyids()])
+					hosts = [host.get('hostid') for host in zab.get_hosts_monitored_by_proxy(proxyid)]
+
+					proxy = zab.update_proxy(proxyid, hosts.append(hostid))
+
+
 				# if not result.get('result'):
 				# 	err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
 				# 	return HttpResponse(err_message)
@@ -313,3 +323,8 @@ def server_detail(req, host):
 	if req.method == 'GET':
 		serializer = ServerSerializer(ser)
 		return Response(serializer.data)
+
+
+# def charts(req):
+
+# 	return render_to_response("charts.html")

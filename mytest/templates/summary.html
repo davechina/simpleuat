@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 
 {% block main %}
+{% load image_exists %}
 
 <!-- begin #content -->
 <div id="content" class="content">
@@ -86,8 +87,12 @@
 	                        			
 	                        			<td class="text-center">
 	                        				<a href="{% url 'pd' pd %}">
-	                        				<div style="float: left">                          
+	                        				<div style="float: left">
+	                        					{% if pd|check_image %}
 	 											<img src="/static/color/img/5102/{{pd}}.png" height="32" width="32">
+	 											{% else %}
+	 											<img src="{% random_image "color/img/5102/" %}" height="32" width="32">
+	 											{% endif %}
 	 										</div>
 		 									<div>
 		                        				<div>{{ pd }}</div>
@@ -101,8 +106,12 @@
 	                        				                        	
 	                        			<td class="text-center">
 	                        				<a href="{% url 'pd' pd %}">
-	                        				<div style="float: left">            
+	                        				<div style="float: left">
+	                        					{% if pd|check_image %}
 	 											<img src="/static/color/img/5102/{{pd}}.png" height="32" width="32">
+	 											{% else %}
+	 											<img src="{% random_image "color/img/5102/" %}" height="32" width="32">
+	 											{% endif %}
 	 										</div>
 		 									<div>
 		                        				<div>{{ pd }}</div>
