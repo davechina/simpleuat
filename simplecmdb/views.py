@@ -24,6 +24,8 @@ from rest_framework.decorators import api_view
 from rest_framework.response import Response
 from simplecmdb.serializers import ServerSerializer
 
+import redis
+
 
 @csrf_exempt
 def CollectHostInfo(req):
@@ -330,5 +332,23 @@ def server_detail(req, host):
 
 
 def charts(req):
-
 	return render_to_response("charts.html", context_instance=RequestContext(req))
+
+
+def get_redis(req):
+	r = redis.StrictRedis(host='10.2.20.210', port=6379)
+	data = {}
+
+	data['aliveCount'] = map(lambda x: int(x), r.hvals('aliveCount')[-10:])
+	data['notaliveCount'] = map(lambda x: int(x), r.hvals('notaliveCount')[-10:])
+	data['minionNoresponse'] = r.hvals('minionNoresponse')[-10:]
+
+	minionAlive = []
+	keys = r.hkeys('minionAlive')[-10:]
+	vals = map(lambda x: float(x)*100, r.hvals('minionAlive')[-10:])	
+	for i in zip(keys, vals):
+		minionAlive.append(list(i))
+	data['minionAlive'] = minionAlive
+
+	chart_data = simplejson.dumps(data)
+	return HttpResponse(chart_data, mimetype="application/json")

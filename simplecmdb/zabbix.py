@@ -52,8 +52,8 @@ class ZabbixOperation(object):
 			template object:
 			https://www.zabbix.com/documentation/2.0/manual/appendix/api/template/definitions
 		"""
-		self.templatenames = templatenames
-		templates = [t for t in self.templatenames]
+
+		templates = [t for t in templatenames]
 
 		data = json.dumps({
 			    "jsonrpc": "2.0",
@@ -75,14 +75,13 @@ class ZabbixOperation(object):
 			return [{'templateid': i.get('templateid')} for i in res]
 
 
-	def get_hostid(self, ip):
-		self.ip = ip
+	def get_hostid(self, hostname):
 		data = json.dumps({
 			'jsonrpc': '2.0',
 			'method': 'host.get',
 			'params': {
 				'output': ['hostid', 'host', 'status'],
-				'filter': {'host': self.ip}
+				'filter': {'host': hostname}
 				},
 			'auth': self.get_authid(),
 			'id': 1
@@ -96,7 +95,6 @@ class ZabbixOperation(object):
 
 
 	def get_hostgroupid(self, groupname):
-		self.groupname = groupname
 		data = json.dumps({		
 			    "jsonrpc": "2.0",
 			    "method": "hostgroup.get",
@@ -104,7 +102,7 @@ class ZabbixOperation(object):
 			        "output": "extend",
 			        "filter": {
 			            "name": [
-			            	self.groupname
+			            	groupname
 			            ]
 			        }
 			    },
@@ -138,13 +136,11 @@ class ZabbixOperation(object):
 	
 
 	def get_hosts_monitored_by_proxy(self, proxyids):
-		self.proxyids = proxyids
-
 		data = json.dumps({
 		    "jsonrpc": "2.0",
 		    "method": "proxy.get",
 		    "params": {
-		    	"proxyids": self.proxyids,
+		    	"proxyids": proxyids,
 		    	"selectHosts": ["name", "hostid"]
 		    },
 		    "auth": self.get_authid(),
@@ -164,32 +160,27 @@ class ZabbixOperation(object):
 			https://www.zabbix.com/documentation/2.0/manual/appendix/api/hostinterface/definitions#host_interface
 		"""
 
-		self.host = host
-		self.ip = ip
-		self.groupid = groupid
-		self.templateid = templateid
-
 		data = json.dumps({
 				    "jsonrpc": "2.0",
 				    "method": "host.create",
 				    "params": {
-				        "host": self.host,
+				        "host": host,
 				        "interfaces": [
 				            {
 				                "type": 1,
 				                "main": 1,
 				                "useip": 1,
-				                "ip": self.ip,
+				                "ip": ip,
 				                "dns": "",
 				                "port": "10050"
 				            }
 				        ],
 				        "groups": [
 				            {
-				                "groupid": self.groupid
+				                "groupid": groupid
 				            }
 				        ],
-				        "templates": self.templateid,
+				        "templates": templateid,
 				        "inventory": {
 				            "macaddress_a": "01234",
 				            "macaddress_b": "56768"
@@ -204,15 +195,12 @@ class ZabbixOperation(object):
 
 
 	def update_proxy(self, proxyid, hosts):
-		self.proxyid = proxyid
-		self.hosts = hosts
-
 		data = json.dumps({
 			    "jsonrpc": "2.0",
 			    "method": "proxy.update",
 			    "params": {
-			        "proxyid": self.proxyid,
-			        "hosts": self.hosts
+			        "proxyid": proxyid,
+			        "hosts": hosts
 			    },
 			    "auth": self.get_authid(),
 			    "id": 1
@@ -228,30 +216,3 @@ if __name__ == '__main__':
 	zabbix_password = 'zabbix'
 
 	zab = ZabbixOperation(zabbix_api, zabbix_user, zabbix_password)
-	# # print zab.get_proxyids()
-	# proxyids = [p.get("proxyid") for p in  zab.get_proxyids()]
-	# import random
-	# data = zab.get_hosts_monitored_by_proxy(random.choice(proxyids))
-	# print [i.get('hostid') for i in data]
-
-	# print zab.get_hostid('192.168.82.56')
-	# hostid = zab.get_hostid('SVR2084HP360')
-
-	# if hostid:
-	# 	grap_url = 'http://zabbixserver.uat.sh.ctriptravel.com/host_screen.php?hostid=%s&sid=8cb624a10c681eb8' % zab.get_hostid('SVR2084HP360')
-
-	# groupid = zab.get_hostgroupid('uat-nt-windows')
-	# templateid = zab.get_templateid('uat-Template OS Windows', 'Template App IIS WP', 'Template .NET CLR')
-	# host = 'UAT0150'
-	# ip = '10.2.24.74'
-	# result = zab.create_host(host, ip, groupid, templateid)
-
-	# groupid = zab.get_hostgroupid('uat-nt-windows')
-	# templateid = zab.get_templateid('uat-Template OS Windows', 'Template App IIS WP', 'Template .NET CLR')
-	# host = ''
-	# ip = ''
-	# result = zab.create_host(host.upper(), ip, groupid, templateid)
-
-	# if not result.get('result'):
-	# 	err_message = 'Add server to zabbix failed. Error message: %s' % result.get('error').get('data')	
-	# 	print err_message

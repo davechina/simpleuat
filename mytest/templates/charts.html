@@ -15,7 +15,6 @@
 	            </div>
 	            <div class="panel-body">
 	            	<div id="highchart_container" style="min-width:800px;height:400px">
-	            		<P>待添加...</P>
 	            		
 	            	</div>
 	            </div>
@@ -29,33 +28,31 @@
 
 {% block script %}
 <script src="/static/highcharts/highcharts.js"></script>
-<script src="/static/highcharts/themes/sand-signika.js"></script>
+<script src="/static/highcharts/themes/dark-unica.js"></script>		<!-- 样式表 -->
 
 <script type="text/javascript">
-	$(function () {
-		$('#highchart_container').highcharts({
-
+	var charOptions = {
 			/* chart图表区属性设置 */
 			chart: {
 				type: 'column',				/* 图表类型 */
-				margin: [50, 50, 50, 50]	/* 图表与包裹它的div四个方向(顺时针)的边距，或与其它图表的间距 */
+				margin: [80, 70, 80, 70],	/* 图表与包裹它的div四个方向(顺时针)的边距，或与其它图表的间距 */
+				renderTo: 'highchart_container'
 			},
 
 			/* chart title的设置 */
 			title: {
-				text: '一周存活情况'
+				text: 'Salt Minion 近10天存活情况'
 			},
 
 			/* chart x坐标轴设置 */
 			xAxis: {
 				type: 'category',
-				categories: ['14-08-26','14-08-27','14-08-28','14-08-29','14-08-30','14-08-31','14-09-01'],
 
 				/* 设置样式 */
 				labels: {
 					rotation: -45,
 					style: {
-						fontsize: '13px';
+						fontsize: '12px',
 						fontFamily: 'Verdana, sans-serif'
 					}
 				}
@@ -64,10 +61,10 @@
 			/* chart y坐标轴设置 */
 			yAxis: {
 				title: {
-					text: '数量'
+					text: 'Minions Alive'
 				},
 				min: 0,
-				max: 300,
+				max: 100,
 			},
 
 			/* chart图例设置，设置chart的图例样式 */
@@ -75,24 +72,99 @@
 				enabled: false
 			},
 
+            plotOptions: {
+                series: {
+                    borderWidth: 0,
+                    dataLabels: {
+                        enabled: true,
+                        format: '{point.y:.1f}%'
+                    },
+                    point: {
+	                    events: {
+	                    	click: function () {
+	                    		var x = 'Inactive Minions: ';
+	                    		x += '\n';
+	                    		x += charOptions.series[3].data[this.x];
+	                    		alert(x);
+	                    	}
+	                    }                    	
+                    }
+                }
+            },	
+
 			/* chart数据点提示设置，当鼠标滑向数据点时显示的提示信息 */
 			tooltip: {
-				pointFormat: 'Alive: <b>{point.y}</b>',
-				valueSuffix: ' 个',
-				shared: true
+	            formatter: function () {
+	            	var s = 'Alive: ' + '<em>' + charOptions.series[1].data[this.x] + '</em>';
+	            	s += '<br/>';
+	            	s += 'Inactive: ' + '<em>' + charOptions.series[2].data[this.x] + '</em>';
+	            	return s
+	            },
+	            // shared: true,         
 			},
 
 			/* 数据 */
-			
+	        series: [{
+	            name: 'alive percent',
+	            data: null,
+
+	            dataLabels: {
+	                enabled: true,
+	                // rotation: -90,
+	                color: '#FFFFFF',
+	                align: 'center',
+	                /* 图标中数字的左右偏移量 */
+	                x: 0,
+	                /* 图标中数字的上下偏移量 */
+	                y: 0,
+
+	                style: {
+	                    fontSize: '13px',
+	                    fontFamily: 'Verdana, sans-serif',
+	                    textShadow: '0 0 3px black'
+	                }
+	            }
+	        },
+
+	        {
+	        	visible: false,
+	        	name: 'aliveCount',
+	        	data: null
+
+	        },
+
+	        {
+	        	visible: false,
+	        	name: 'notaliveCount',
+	        	data: null
+
+	        },
+
+	        {
+	        	visible: false,
+	        	name: 'minionNoresponse',
+	        	data: null
+
+	        }        	                
+	        ]
+	    }
 
 
+	function showChart() {
+		$.getJSON('/getRedis/', function (data) {
+			// alert(data.minionAlive);
 
+			charOptions.series[0].data = data.minionAlive;
+			charOptions.series[1].data = data.aliveCount;
+			charOptions.series[2].data = data.notaliveCount;
+			charOptions.series[3].data = data.minionNoresponse;	
 
+			var chart = new Highcharts.Chart(charOptions);
+		});	
+	}
 
-			},
-			
-		});
-	});
+	showChart();
+
 </script>
 
 {% endblock %}
