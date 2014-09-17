@@ -336,19 +336,26 @@ def charts(req):
 
 
 def get_redis(req):
+	def convert_value(data_, type_):
+		for i in data_.keys():
+			data_[i] = type_(data_[i])
+		return data_
+
 	r = redis.StrictRedis(host='10.2.20.210', port=6379)
 	data = {}
 
-	data['aliveCount'] = map(lambda x: int(x), r.hvals('aliveCount')[-10:])
-	data['notaliveCount'] = map(lambda x: int(x), r.hvals('notaliveCount')[-10:])
-	data['minionNoresponse'] = r.hvals('minionNoresponse')[-10:]
-
 	minionAlive = []
 	keys = r.hkeys('minionAlive')[-10:]
-	vals = map(lambda x: float(x)*100, r.hvals('minionAlive')[-10:])	
+	vals = map(lambda x: float(x)*100, r.hvals('minionAlive')[-10:])
 	for i in zip(keys, vals):
 		minionAlive.append(list(i))
 	data['minionAlive'] = minionAlive
+
+	data['minionNoresponse'] = r.hgetall('minionNoresponse')
+	data['notaliveCount'] = convert_value(r.hgetall('notaliveCount'), int)
+	data['aliveCount'] = convert_value(r.hgetall('aliveCount'), int)
+	# data['minionAlive'] = convert_value(r.hgetall('minionAlive'), float)
+
 
 	chart_data = simplejson.dumps(data)
 	return HttpResponse(chart_data, mimetype="application/json")

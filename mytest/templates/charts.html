@@ -72,9 +72,11 @@
 				enabled: false
 			},
 
+			/* plotOptions 每个series的数据点选项设置，Highcharts对不同的series type提供的选项略有不同，plotOptions.series里提供了一些共有的属性。*/
             plotOptions: {
                 series: {
-                    borderWidth: 0,
+                	cursor: 'pointer',
+                    borderWidth: 0,    /* 配置column图表的属性 */
                     dataLabels: {
                         enabled: true,
                         format: '{point.y:.1f}%'
@@ -82,25 +84,27 @@
                     point: {
 	                    events: {
 	                    	click: function () {
-	                    		var x = 'Inactive Minions: ';
-	                    		x += '\n';
-	                    		x += charOptions.series[3].data[this.x];
-	                    		alert(x);
+	                    		var i = 'Inactive Minions: ';
+	                    		i += '\n';
+	                    		i += charOptions.series[3].data[this.name];
+	                    		alert(i);
 	                    	}
-	                    }                    	
+	                    }
                     }
                 }
             },	
 
-			/* chart数据点提示设置，当鼠标滑向数据点时显示的提示信息 */
+			/* chart数据点提示框设置，当鼠标滑向数据点时显示的提示信息 */
 			tooltip: {
 	            formatter: function () {
-	            	var s = 'Alive: ' + '<em>' + charOptions.series[1].data[this.x] + '</em>';
+	            	// alert(this.points[0].point.name);  //shared为true
+	            	// alert(this.point.name);	//shared为false
+	            	var s = 'Alive: ' + '<em>' + charOptions.series[1].data[this.points[0].point.name] + '</em>';
 	            	s += '<br/>';
-	            	s += 'Inactive: ' + '<em>' + charOptions.series[2].data[this.x] + '</em>';
+	            	s += 'Inactive: ' + '<em>' + charOptions.series[2].data[this.points[0].point.name] + '</em>';
 	            	return s
 	            },
-	            // shared: true,         
+	            shared: true, 
 			},
 
 			/* 数据 */
@@ -152,8 +156,6 @@
 
 	function showChart() {
 		$.getJSON('/getRedis/', function (data) {
-			// alert(data.minionAlive);
-
 			charOptions.series[0].data = data.minionAlive;
 			charOptions.series[1].data = data.aliveCount;
 			charOptions.series[2].data = data.notaliveCount;
