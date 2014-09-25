@@ -297,6 +297,8 @@ def domain(req):
 
 	if req.method == "GET" and "getdomain" in req.GET:
 		i_data = req.GET.get('getdomain').strip().encode('utf8')
+		if i_data.startswith('http'):
+			i_data = i_data.split('//')[1]
 		o_data = socket.gethostbyname(i_data)
 
 		if fnmatch.fnmatch(o_data, '10.2.29.*'):
