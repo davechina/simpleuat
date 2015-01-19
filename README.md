@@ -1,3 +1,3 @@
-simpleuat
+CMDB
 =========
-运维管理平台
+饿了么CMDB系统

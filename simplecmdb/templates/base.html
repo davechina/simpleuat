@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+		<meta charset="utf-8">
+		<title>ELECMDB</title>
+		<meta content="width=device-width, initial-scale=1.0" name="viewport">
+		<meta content="" name="description">
+		<meta content="" name="author">
+
+		<!-- ================== BEGIN BASE CSS STYLE ================== -->
+		<link href="/static/color/css/jquery-ui.min.css" rel="stylesheet">
+		<link href="/static/color/css/bootstrap.min.css" rel="stylesheet">
+		<link href="/static/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet">
+		<link href="/static/color/css/animate.min.css" rel="stylesheet">
+		<link href="/static/color/css/style.min.css" rel="stylesheet">
+		<link href="/static/color/css/style-responsive.min.css" rel="stylesheet">
+		<!-- ================== END BASE CSS STYLE ================== -->
+
+		<!-- ================== BEGIN PAGE LEVEL STYLE ================== -->
+		<link href="/static/color/css/data-table.css" rel="stylesheet">
+		<!-- ================== END PAGELEVEL STYLE ================== -->
+
+		<style type="text/css">
+			a:link {text-decoration: none; color:none}
+		</style>
+	</head>
+	
+	<body>
+		<!-- begin #page-loader -->
+		<div id="page-loader" class="fade in hide"><span class="spinner"></span></div>
+		<!-- end #page-loader -->
+		
+		<!-- begin #page-container -->
+		<div id="page-container" class="fade in">
+			{% include "headerbar.html" %}
+			
+			{% include "sidebar.html" %}
+
+			{% block main %}
+			{% endblock %}
+			
+			<!-- begin scroll to top btn -->
+			<a href="javascript:;" class="btn btn-icon btn-circle btn-success btn-scroll-to-top fade" data-click="scroll-top"><i class="fa fa-angle-up"></i></a>
+			<!-- end scroll to top btn -->
+		</div>
+		<!-- end page container -->
+
+		<!-- ================== BEGIN BASE JS ================== -->
+		<script src="/static/bootstrap/js/jquery-1.11.0.min.js"></script>
+		<script src="/static/color/js/jquery-ui.min.js"></script>
+		<script src="/static/color/js/bootstrap.min.js"></script>
+		<script src="/static/color/js/jquery.slimscroll.min.js"></script>
+		<script src="/static/color/js/apps.min.js"></script>
+		<!-- ================== END BASE JS ================== -->
+
+		<!-- ================== BEGIN PAGE LEVEL JS ================== -->
+		<script type="text/javascript" src="/static/json2.js"></script>
+		<script src="/static/color/js/jquery.dataTables.js"></script>
+		<script src="/static/color/js/data-table.js"></script>
+		<!-- ================== END PAGE LEVEL JS ================== -->
+
+		<script>
+			$(document).ready(function() {
+				App.init();
+			});
+		</script>
+
+		<!-- 导航栏点击变色 -->
+		<script type="text/javascript">
+			$(function(){
+			  function stripTrailingSlash(str) {
+			    if(str.substr(-1) == '/') {
+			      return str.substr(0, str.length - 1);
+			    }
+			    return str;
+			  }
+
+			  var url = window.location.pathname;  
+			  var activePage = stripTrailingSlash(url);
+
+			  $('.nav li a').each(function(){  
+			    var currentPage = stripTrailingSlash($(this).attr('href'));
+
+			    if (activePage == currentPage) {
+			      $(this).parent().addClass('active'); 
+			    } 
+			  });
+			});
+		</script>
+
+		
+		{% block script %}
+		{% endblock %}
+
+	</body>
+</html>

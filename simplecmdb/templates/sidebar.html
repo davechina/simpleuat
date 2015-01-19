@@ -1,0 +1,63 @@
+<!-- begin sidebar -->
+<div id="sidebar" class="sidebar">
+	<!-- begin sidebar scrollbar -->
+	<div class="slimScrollDiv" style="position: relative; overflow: hidden; width: auto; height: 100%;">
+		<div data-scrollbar="true" data-height="100%" style="overflow: auto; width: auto; height: 100%;">
+			<!-- begin sidebar user -->
+			<ul class="nav">
+				<li class="nav-profile">
+					Navigator
+				</li>
+			</ul>
+			<!-- end sidebar user -->
+			<!-- begin sidebar nav -->
+			<ul class="nav">
+				
+				<li><a href="/"><i class="fa fa-laptop"></i> <span>概览</span></a></li>
+				<li class="has-sub">
+					<a href="javascript:;">
+					    <i class="fa fa-signal"></i> 
+					    <b class="caret pull-right"></b>
+					    <span>资产总表</span> 
+					</a>
+
+					<ul class="sub-menu" style="overflow: hidden; display: none;">
+						{% for atypes in sidebar_atypes %}
+							{# <li><a href="">{{ atypes }}</a></li> #}
+							<li><a href="{% url 'asset' atypes %}">{{ atypes }}</a></li>
+						{% endfor %}
+					</ul>
+				</li>				
+
+
+				<li class="has-sub">
+					<a href="javascript:;">
+					    <i class="fa fa-suitcase"></i> 
+					    <b class="caret pull-right"></b>
+					    <span>项目资产</span> 
+					</a>
+
+					<ul class="sub-menu" style="overflow: hidden; display: none;">
+						{% for pj in sidebar_apjs %}
+							<li><a href="{% url 'project' pj.name %}">{{ pj.name }}</a></li>
+						{% endfor %}
+					</ul>
+				</li>
+				{% if perms.can_add_server %}
+				<li><a href="/server"><i class="fa fa-pencil-square-o"></i> <span>手动维护</span></a></li>
+				{% endif %}			
+				<li><a href="/help"><i class="fa fa-file"></i> <span>帮助</span></a></li>
+
+
+		        <!-- begin sidebar minify button -->
+				<li><a href="javascript:;" class="sidebar-minify-btn" data-click="sidebar-minify"><i class="fa fa-angle-double-left"></i></a></li>
+		        <!-- end sidebar minify button -->
+			</ul>
+			<!-- end sidebar nav -->
+		</div>
+		<div class="slimScrollBar ui-draggable" style="width: 7px; position: absolute; top: 0px; opacity: 0.4; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; z-index: 99; right: 1px; height: 873px; background: rgb(0, 0, 0);"></div>
+		<div class="slimScrollRail" style="width: 7px; height: 100%; position: absolute; top: 0px; display: none; border-top-left-radius: 7px; border-top-right-radius: 7px; border-bottom-right-radius: 7px; border-bottom-left-radius: 7px; opacity: 0.2; z-index: 90; right: 1px; background: rgb(51, 51, 51);"></div>
+	</div>
+	<!-- end sidebar scrollbar -->
+</div>
+<!-- end sidebar -->

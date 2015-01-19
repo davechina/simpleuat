@@ -1,26 +1,54 @@
 # -*- coding:utf-8 -*-
+
 from django.db import models
+from django.utils.encoding import smart_unicode
 
 
-class PD(models.Model):
-	Name = models.CharField(primary_key=True, max_length=30)
-	Contact = models.TextField(u'联络人', blank=True, null=True)
+class Project(models.Model):
+    name = models.CharField(primary_key=True, max_length=30)
+    contact = models.TextField(u'联络人', blank=True, null=True)
 
-	def __unicode__(self):
-		return self.Name
+    def __unicode__(self):
+        return smart_unicode(self.name)
+    
+
+class IDC(models.Model):
+    name = models.CharField(primary_key=True, max_length=30)
+    
+    def __unicode__(self):
+        return smart_unicode(self.name)
 
 
-class Server(models.Model):
-	IPAddress = models.CharField(u'IP', primary_key=True, max_length=20)
-	HostName = models.CharField(u'主机名', max_length=20, blank=True, null=True)	
-	OSInfo = models.CharField(u'操作系统', max_length=50, blank=True, null=True)
-	CPUInfo = models.CharField(u'CPU核数', max_length=20, blank=True, null=True)
-	MemInfo = models.CharField(u'内存大小', max_length=20, blank=True, null=True)
-	DiskTotal = models.CharField(u'硬盘大小', max_length=20, blank=True, null=True)
-	DiskInfo = models.TextField(u'分区信息', blank=True, null=True)
-	Role = models.CharField(u'角色', max_length=20, blank=True, null=True)
-	Comments = models.TextField(u'功能', blank=True, null=True)	
-	Pd = models.ForeignKey(PD)
+class AssetType(models.Model):
+    name = models.CharField(primary_key=True, max_length=30)
+    #project = models.ForeignKey(Project)
 
-	def __unicode__(self):
-		return self.IPAddress
+    def __unicode__(self):
+        return smart_unicode(self.name)
+
+
+class AssetField(models.Model):
+    assettype = models.ManyToManyField(AssetType)
+    name = models.CharField(primary_key=True, max_length=100)
+
+    def __unicode__(self):
+        return smart_unicode(self.name)
+
+
+class Asset(models.Model):
+    name = models.CharField(primary_key=True, max_length=30)
+    assettype = models.ForeignKey(AssetType)
+    project = models.ManyToManyField(Project)
+    idc = models.ForeignKey(IDC)
+
+    def __unicode__(self):
+        return smart_unicode(self.name)
+
+
+class AssetFieldValue(models.Model):
+    asset = models.ForeignKey(Asset)
+    assetinfo = models.ForeignKey(AssetField)
+    fieldvalue = models.CharField(max_length=100, null=True, blank=True)
+
+    def __unicode__(self):
+        return smart_unicode(self.fieldvalue)

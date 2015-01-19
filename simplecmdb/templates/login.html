@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+        <meta charset="utf-8">
+        <title>Login</title>
+        <meta content="width=device-width, initial-scale=1.0" name="viewport">
+        <meta content="" name="description">
+        <meta content="" name="author">
+
+        <!-- ================== BEGIN BASE CSS STYLE ================== -->
+        <link href="/static/color/css/jquery-ui.min.css" rel="stylesheet">
+        <link href="/static/color/css/bootstrap.min.css" rel="stylesheet">
+        <link href="/static/font-awesome-4.1.0/css/font-awesome.min.css" rel="stylesheet">
+        <link href="/static/color/css/animate.min.css" rel="stylesheet">
+        <link href="/static/color/css/style.min.css" rel="stylesheet">
+        <link href="/static/color/css/style-responsive.min.css" rel="stylesheet">
+        <!-- ================== END BASE CSS STYLE ================== -->
+
+        <!-- ================== BEGIN PAGE LEVEL STYLE ================== -->
+        <link href="/static/color/css/data-table.css" rel="stylesheet">
+        <!-- ================== END PAGELEVEL STYLE ================== -->
+
+        <style type="text/css">
+            a:link {text-decoration: none; color:none}
+        </style>
+    </head>
+    
+    <body>
+        <!-- begin #page-loader -->
+        <div id="page-loader" class="fade in hide"><span class="spinner"></span></div>
+        <!-- end #page-loader -->
+        
+        <!-- begin #page-container -->
+        <div id="page-container" class="fade in">
+            <div class="login bg-black animated fadeInDown">
+                <div class="login-content">
+                    <form action="{% url 'django.contrib.auth.views.login' %}" method="POST" class="margin-bottom-0">
+                        {% csrf_token %} 
+                        <div class="form-group m-b-20">
+                            <input type="text" class="form-control input-lg" placeholder="Email Address">
+                        </div>
+                        <div class="form-group m-b-20">
+                            <input type="text" class="form-control input-lg" placeholder="Password">
+                        </div>
+                        <div class="checkbox m-b-20">
+                            <label>
+                                <input type="checkbox"> Remember Me
+                            </label>
+                        </div>
+                        <div class="login-buttons">
+                            <button type="submit" class="btn btn-success btn-block btn-lg">Sign me in</button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+        <!-- end page container -->
+    </body>
+</html>

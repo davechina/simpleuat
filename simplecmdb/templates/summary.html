@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block main %}
+{% load image_exists %}
+
+<!-- begin #projects -->
+<div id="content" class="content">
+
+	<div class="row">
+	    <!-- begin col-12 -->
+	    <div class="col-md-12 ui-sortable">
+	        <!-- begin panel -->
+	        <div class="panel panel-inverse">
+	            <div class="panel-heading">
+	                <div class="panel-heading-btn">
+	                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand" data-original-title="" title=""><i class="fa fa-expand"></i></a>
+	                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+	                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+	                </div>
+	                <h4 class="panel-title">Project 概览</h4>
+	            </div>
+	            <div class="panel-body">
+	                <table class="table table-bordered m-b-0">
+	                    <tbody>
+	                    	{% for pj in pjs %}  
+	                    		{% if forloop.counter0|divisibleby:"4" %}
+	                    			{% ifnotequal forloop.counter 1 %}
+	                    				</tr> 
+	                    			{% endifnotequal %}
+	                    			               	
+	                        		<tr>
+	                        			<td class="text-center">
+	                        				<a href="{% url 'project' pj.name %}">
+	                        				<div style="float: left">
+	                        					{% if pj.name|check_image %}
+	 											<img src="/static/color/img/5102/{{pj}}.png" height="32" width="32">
+	 											{% else %}
+	 											<img src="{% random_image "color/img/5102/" %}" height="32" width="32">
+	 											{% endif %}
+	 										</div>
+	 										<div>
+	 											<div>{{ pj }}</div>
+	 										</div>
+		                    				</a>
+	                        			</td>
+	 										                        			
+	                        	{% else %}
+	                        				                        	
+	                        			<td class="text-center">
+	                        				<a href="{% url 'project' pj.name %}">
+	                        				<div style="float: left">
+	                        					{% if pj.name|check_image %}
+	 											<img src="/static/color/img/5102/{{pj}}.png" height="32" width="32">
+	 											{% else %}
+	 											<img src="{% random_image "color/img/5102/" %}" height="32" width="32">
+	 											{% endif %}
+	 										</div>
+		 									<div>
+		                        				<div>{{ pj.name }}</div>
+		                    				</div>
+		                    				</a>
+	                        			</td>
+	                        			
+	                        	{% endif %}	                                                 
+	                        {% endfor %}
+	                        </tr> 
+	                    </tbody>
+	                </table>
+	            </div>
+	        </div>
+	        <!-- end panel -->
+	    </div>
+	    <!-- end col-12 -->
+	</div>
+
+</div>
+<!-- end #projects -->
+
+<!-- begin #assets -->
+<div id="content" class="content">
+	
+	<div class="row">
+	    <!-- begin col-12 -->
+	    <div class="col-md-12 ui-sortable">
+	        <!-- begin panel -->
+	        <div class="panel panel-inverse">
+	            <div class="panel-heading">
+	                <div class="panel-heading-btn">
+	                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-default" data-click="panel-expand" data-original-title="" title=""><i class="fa fa-expand"></i></a>
+	                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-success" data-click="panel-reload"><i class="fa fa-repeat"></i></a>
+	                    <a href="javascript:;" class="btn btn-xs btn-icon btn-circle btn-warning" data-click="panel-collapse"><i class="fa fa-minus"></i></a>
+	                </div>
+	                <h4 class="panel-title">Asset 概览</h4>
+	            </div>
+	            <div class="panel-body">
+	                <table class="table table-bordered m-b-0">
+	                    <tbody>
+	                    	{% for asset, count in assets.items %}  
+	                    		{% if forloop.counter0|divisibleby:"4" %}
+	                    			{% ifnotequal forloop.counter 1 %}
+	                    				</tr> 
+	                    			{% endifnotequal %}
+	                    			               	
+	                        		<tr>
+	                        			
+	                        			<td class="text-center">
+	                        				<a href="{% url 'asset' asset %}">
+	                        				<div style="float: left">
+	                        					{% if asset.name|check_image %}
+	 											<img src="/static/color/img/5102/{{asset}}.png" height="32" width="32">
+	 											{% else %}
+	 											<img src="{% random_image "color/img/5102/" %}" height="32" width="32">
+	 											{% endif %}
+	 										</div>
+		 									<div>
+		                        				<div>{{ asset.name }}</div>
+		                    					<div class="hidden-xs"><strong>{{ count }}</strong></div>
+
+		                    				</div>
+		                    				</a>
+	                        			</td>
+	 										                        			
+	                        	{% else %}
+	                        				                        	
+	                        			<td class="text-center">
+	                        				<a href="{% url 'asset' asset %}">
+	                        				<div style="float: left">
+	                        					{% if asset.name|check_image %}
+	 											<img src="/static/color/img/5102/{{asset}}.png" height="32" width="32">
+	 											{% else %}
+	 											<img src="{% random_image "color/img/5102/" %}" height="32" width="32">
+	 											{% endif %}
+	 										</div>
+		 									<div>
+		                        				<div>{{ asset.name }}</div>
+		                    					<div class="hidden-xs"><strong>{{ count }}</strong></div>
+		                    				</div>
+		                    				</a>
+	                        			</td>
+	                        			
+	                        	{% endif %}
+	                                                 
+	                        {% endfor %}
+	                        </tr> 
+	                    </tbody>
+	                </table>
+	            </div>
+	        </div>
+	        <!-- end panel -->
+	    </div>
+	    <!-- end col-12 -->
+	</div>
+
+</div>
+<!-- end #assets -->
+
+{% endblock %}
+
