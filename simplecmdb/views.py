@@ -180,14 +180,14 @@ def pd(req, pd_name):
 
 @login_required(login_url='/login/')
 def jump_zabbix(req, host):
-	zabbix_api = 'http://zabbixserver.qa.nt.ctripcorp.com/api_jsonrpc.php'
+	zabbix_api = 'http://example.com/api_jsonrpc.php'
 	zabbix_user = 'admin'
 	zabbix_password = 'zabbix'
 
 	zab = ZabbixOperation(zabbix_api, zabbix_user, zabbix_password)
 	hostid = zab.get_hostid(host)
 	if hostid:
-		grap_url = 'http://zabbixserver.qa.nt.ctripcorp.com/host_screen.php?hostid=%s&sid=40fa87ffa0252c78' % hostid
+		grap_url = 'http://example.com/host_screen.php?hostid=%s&sid=40fa87ffa0252c78' % hostid
 		return redirect(grap_url)
 	else:
 		# raise Http404
@@ -220,7 +220,7 @@ def server(req):
 			if form.is_valid():
 				data = form.cleaned_data
 
-				zabbix_api = 'http://zabbixserver.qa.nt.ctripcorp.com/api_jsonrpc.php'
+				zabbix_api = 'http://example.com/api_jsonrpc.php'
 				zabbix_user = 'admin'
 				zabbix_password = 'zabbix'
 				zab = ZabbixOperation(zabbix_api, zabbix_user, zabbix_password)
@@ -302,7 +302,7 @@ def domain(req):
 		o_data = socket.gethostbyname(i_data)
 
 		if fnmatch.fnmatch(o_data, '10.2.29.*'):
-			uat_webinfo = "http://opskits.uat.qa.nt.ctripcorp.com/Pool/List?Device=&Product=&Status=&Keyword=%s" % o_data
+			uat_webinfo = "http://example.com/Pool/List?Device=&Product=&Status=&Keyword=%s" % o_data
 			return redirect(uat_webinfo)
 		else:
 
