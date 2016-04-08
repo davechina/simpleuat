@@ -1,3 +1,3 @@
 simpleuat
 =========
-一个很Low的CMDB，Djando项目。
+一个很Low的CMDB，Django项目。
